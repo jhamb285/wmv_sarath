@@ -32,63 +32,62 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* Dubai Retro Theme - Light Mode */
+/* Dark Purple Theme */
 :root {
   --radius: 0.5rem;
-  
-  /* Light Theme - Retro Inspired */
-  --background: #f5f1e6;        /* Warm cream from retro map */
-  --foreground: #523735;        /* Rich brown from retro map */
-  --card: #fdfcf8;              /* Lightest retro surface */
-  --card-foreground: #523735;   /* Rich brown text */
-  --popover: #ebe3cd;           /* Base geometry color from map */
-  --popover-foreground: #523735; /* Rich brown text */
-  --primary: #e9bc62;           /* Highway stroke gold */
-  --primary-foreground: #523735; /* Rich brown on gold */
-  --secondary: #dfd2ae;         /* Natural landscape hover */
-  --secondary-foreground: #523735; /* Rich brown text */
-  --muted: #ebe3cd;             /* Base geometry color */
-  --muted-foreground: #93817c;  /* Muted retro brown */
-  --accent: #dfd2ae;            /* Natural landscape color */
-  --accent-foreground: #523735; /* Rich brown text */
-  --destructive: #db8555;       /* Warm controlled access orange */
-  --destructive-foreground: #f5f1e6; /* Warm white text */
-  --border: #dcd2be;            /* Administrative stroke */
-  --input: #ebe3cd;             /* Base geometry input background */
-  --ring: #f8c967;              /* Highway focus color */
-  
-  /* Venue Pin Colors - Retro Earth Tones */
-  --venue-nightclub: #f8c967;  /* Highway gold - Premium venues */
-  --venue-restaurant: #a5b076; /* Park green - Dining */
-  --venue-bar: #e98d58;        /* Controlled access orange - Bars/Lounges */
-  --venue-beach: #b9d3c2;      /* Water blue-green - Beach clubs */
-  --venue-rooftop: #db8555;    /* Controlled access stroke - Rooftop venues */
-  --venue-hotel: #dfd2ae;      /* Natural landscape - Hotel venues */
-  --venue-default: #93817c;    /* Muted brown - Uncategorized */
+
+  /* Dark Purple Palette */
+  --background: #0a0a1a;        /* Deep dark navy */
+  --foreground: #e8ecf2;        /* Light gray text */
+  --card: #111127;              /* Dark card surface */
+  --card-foreground: #e8ecf2;   /* Light text on card */
+  --popover: #1a1a3e;           /* Popover background */
+  --popover-foreground: #e2e8f0; /* Light text */
+  --primary: #7c3aed;           /* Violet accent */
+  --primary-foreground: #ffffff; /* White on violet */
+  --secondary: #1e1b4b;         /* Dark indigo surface */
+  --secondary-foreground: #e2e8f0; /* Light text */
+  --muted: #1a1a3e;             /* Muted dark purple */
+  --muted-foreground: #8b95a7;  /* Gray muted text */
+  --accent: #2e1065;            /* Deep purple accent */
+  --accent-foreground: #e2e8f0; /* Light text */
+  --destructive: #ef4444;       /* Red */
+  --destructive-foreground: #ffffff; /* White text */
+  --border: rgba(255, 255, 255, 0.06); /* Neutral border */
+  --input: #1e1b4b;             /* Dark indigo input */
+  --ring: #7c3aed;              /* Purple focus ring */
+
+  /* Venue Pin Colors - Purple Spectrum */
+  --venue-nightclub: #a78bfa;  /* Light purple - Premium venues */
+  --venue-restaurant: #34d399; /* Emerald - Dining */
+  --venue-bar: #f97316;        /* Orange - Bars/Lounges */
+  --venue-beach: #22d3ee;      /* Cyan - Beach clubs */
+  --venue-rooftop: #f472b6;    /* Pink - Rooftop venues */
+  --venue-hotel: #a3a3a3;      /* Gray - Hotel venues */
+  --venue-default: #7c3aed;    /* Purple - Default */
 }
 
-/* Dubai Retro Theme - Dark Mode */
+/* Dark mode uses the same palette */
 .dark {
-  /* Dark Theme - Retro Inspired */
-  --background: #2a2419;        /* Warm dark brown */
-  --foreground: #f5f1e6;        /* Warm white from retro map */
-  --card: #3d3426;              /* Elevated warm surface */
-  --card-foreground: #f5f1e6;   /* Warm white text */
-  --popover: #4a4030;           /* Popover background */
-  --popover-foreground: #f5f1e6; /* Warm white text */
-  --primary: #f8c967;           /* Warm gold from retro highways */
-  --primary-foreground: #523735; /* Rich brown on gold */
-  --secondary: #564935;         /* Secondary surface */
-  --secondary-foreground: #f5f1e6; /* Warm white text */
-  --muted: #4a4030;             /* Muted background */
-  --muted-foreground: #93817c;  /* Muted text from retro palette */
-  --accent: #564935;            /* Accent surface */
-  --accent-foreground: #f5f1e6; /* Warm white text */
-  --destructive: #db8555;       /* Warm orange error state */
-  --destructive-foreground: #f5f1e6; /* Warm white text */
-  --border: #564935;            /* Warm border color */
-  --input: #564935;             /* Input background */
-  --ring: #f8c967;              /* Focus rings - highway gold */
+  --background: #0a0a1a;
+  --foreground: #e8ecf2;
+  --card: #111127;
+  --card-foreground: #e8ecf2;
+  --popover: #1a1a3e;
+  --popover-foreground: #e8ecf2;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #1e1b4b;
+  --secondary-foreground: #e8ecf2;
+  --muted: #1a1a3e;
+  --muted-foreground: #8b95a7;
+  --accent: #2e1065;
+  --accent-foreground: #e8ecf2;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.06);
+  --input: #1e1b4b;
+  --ring: #7c3aed;
 }
 
 @layer base {
@@ -103,6 +102,10 @@
     /* Full viewport height on mobile */
     min-height: 100vh;
     min-height: -webkit-fill-available;
+    /* Professional font rendering */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   html {
@@ -179,9 +182,33 @@
   }
 
   .glassmorphism-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(124, 58, 237, 0.08);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.15);
+  }
+
+  .glassmorphism-dark {
+    background: rgba(10, 10, 26, 0.92);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Professional glass surface */
+  .glassmorphism-surface {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  }
+
+  /* Elevated glass surface */
+  .glassmorphism-elevated {
+    background: rgba(10, 10, 26, 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.4),
+      0 1px 0 rgba(255, 255, 255, 0.06) inset;
   }
 
   /* Popup Animation */
@@ -234,7 +261,7 @@
     cursor: pointer;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow:
       0 8px 32px rgba(0, 0, 0, 0.1),
       0 2px 8px rgba(0, 0, 0, 0.05);
@@ -248,6 +275,7 @@
   /* Card Hover State */
   .card:hover {
     transform: translateY(-3px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     box-shadow:
       0 12px 40px rgba(0, 0, 0, 0.15),
       0 4px 12px rgba(0, 0, 0, 0.08);
@@ -257,7 +285,7 @@
   .card.expanded {
     z-index: 100 !important;
     margin-bottom: 30px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
     box-shadow:
       0 16px 48px rgba(0, 0, 0, 0.2),
       0 8px 16px rgba(0, 0, 0, 0.1);
@@ -299,7 +327,7 @@
     font-family: 'Fraunces', Georgia, serif;
     font-size: 22px;
     font-weight: 700;
-    color: #fbbf24;
+    color: #a78bfa;
     letter-spacing: -0.02em;
     line-height: 1.2;
     margin: 0;
@@ -512,9 +540,9 @@
     border-radius: 12px;
     font-size: 12px;
     font-weight: 600;
-    background: rgba(251, 191, 36, 0.2);
-    border: 1px solid rgba(251, 191, 36, 0.4);
-    color: #fbbf24;
+    background: rgba(124, 58, 237, 0.2);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    color: #a78bfa;
   }
 
   /* Offer Badges */

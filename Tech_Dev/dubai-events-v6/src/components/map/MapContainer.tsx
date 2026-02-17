@@ -33,6 +33,10 @@ interface ExtendedMapContainerProps extends MapContainerProps {
   navButtons?: React.ReactNode;
   showDatePicker?: boolean;
   datePickerProps?: DateSelectorProps;
+  embedMode?: boolean; // When true, omits TopNav/CategoryPills overlay (parent handles them)
+  disableFloatingPanel?: boolean; // When true, skips rendering VenueFloatingPanel (parent handles venue display)
+  gestureMode?: 'greedy' | 'cooperative'; // Controls map gesture handling. 'cooperative' requires two-finger pan (for embedded scrollable maps)
+  onMapClick?: () => void; // Called when the map background is clicked (not a marker)
 }
 
 const MapContainer: React.FC<ExtendedMapContainerProps> = ({
@@ -47,6 +51,10 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
   navButtons,
   showDatePicker,
   datePickerProps,
+  embedMode = false,
+  disableFloatingPanel = false,
+  gestureMode,
+  onMapClick,
 }) => {
   console.log('🚨 MAP CONTAINER RENDER - Component is rendering!');
   console.log('🚨 MAP CONTAINER RENDER - Filters:', filters);
@@ -294,142 +302,45 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
 
   // Initialize mapOptions and update when theme changes
   React.useEffect(() => {
-    const lightStyles = [
-      // Retro styling with POI hiding
-      { elementType: "geometry", stylers: [{ color: "#ebe3cd" }] },
-      { elementType: "labels.text.fill", stylers: [{ color: "#523735" }] },
-      { elementType: "labels.text.stroke", stylers: [{ color: "#f5f1e6" }] },
-      {
-        featureType: "administrative",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#c9b2a6" }],
-      },
-      {
-        featureType: "administrative.land_parcel",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#dcd2be" }],
-      },
-      {
-        featureType: "administrative.land_parcel",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#ae9e90" }],
-      },
-      {
-        featureType: "landscape.natural",
-        elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
-      },
-      {
-        featureType: "poi",
-        elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
-      },
-      {
-        featureType: "poi",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#93817c" }],
-      },
-      // Hide POI business markers
-      {
-        featureType: "poi.business",
-        stylers: [{ visibility: "off" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "geometry.fill",
-        stylers: [{ color: "#a5b076" }],
-      },
-      {
-        featureType: "poi.park",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#447530" }],
-      },
-      {
-        featureType: "road",
-        elementType: "geometry",
-        stylers: [{ color: "#f5f1e6" }],
-      },
-      {
-        featureType: "road.arterial",
-        elementType: "geometry",
-        stylers: [{ color: "#fdfcf8" }],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "geometry",
-        stylers: [{ color: "#f8c967" }],
-      },
-      {
-        featureType: "road.highway",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#e9bc62" }],
-      },
-      {
-        featureType: "road.highway.controlled_access",
-        elementType: "geometry",
-        stylers: [{ color: "#e98d58" }],
-      },
-      {
-        featureType: "road.highway.controlled_access",
-        elementType: "geometry.stroke",
-        stylers: [{ color: "#db8555" }],
-      },
-      {
-        featureType: "road.local",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#806b63" }],
-      },
-      {
-        featureType: "transit.line",
-        elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
-      },
-      {
-        featureType: "transit.line",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#8f7d77" }],
-      },
-      {
-        featureType: "transit.line",
-        elementType: "labels.text.stroke",
-        stylers: [{ color: "#ebe3cd" }],
-      },
-      // Hide transit icons
-      {
-        featureType: "transit",
-        elementType: "labels.icon",
-        stylers: [{ visibility: "off" }],
-      },
-      {
-        featureType: "transit.station",
-        elementType: "geometry",
-        stylers: [{ color: "#dfd2ae" }],
-      },
-      {
-        featureType: "water",
-        elementType: "geometry.fill",
-        stylers: [{ color: "#b9d3c2" }],
-      },
-      {
-        featureType: "water",
-        elementType: "labels.text.fill",
-        stylers: [{ color: "#92998d" }],
-      },
+    const darkPurpleStyles: google.maps.MapTypeStyle[] = [
+      { elementType: "geometry", stylers: [{ color: "#0f0a2e" }] },
+      { elementType: "labels.text.fill", stylers: [{ color: "#6d5dac" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#0a0520" }] },
+      { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
+      { featureType: "administrative.land_parcel", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
+      { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#4a3d7a" }] },
+      { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#110d28" }] },
+      { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#0d0925" }] },
+      { featureType: "poi", elementType: "geometry", stylers: [{ color: "#110d28" }] },
+      { featureType: "poi", elementType: "labels.text", stylers: [{ visibility: "off" }] },
+      { featureType: "poi.business", stylers: [{ visibility: "off" }] },
+      { featureType: "poi.park", elementType: "geometry.fill", stylers: [{ color: "#0f1a2e" }] },
+      { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#3a5a4a" }] },
+      { featureType: "road", elementType: "geometry", stylers: [{ color: "#1a1040" }] },
+      { featureType: "road", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+      { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#1e1450" }] },
+      { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#2a1860" }] },
+      { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
+      { featureType: "road.highway.controlled_access", elementType: "geometry", stylers: [{ color: "#321d70" }] },
+      { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#4a3d7a" }] },
+      { featureType: "transit", stylers: [{ visibility: "off" }] },
+      { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#060318" }] },
+      { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#2a1860" }] },
     ];
 
-
-    const mapStyles = lightStyles;
+    const mapStyles = darkPurpleStyles;
 
     const newMapOptions: google.maps.MapOptions = {
       ...MAP_OPTIONS,
       center: mapViewportRef.current.center,
       zoom: mapViewportRef.current.zoom,
-      styles: mapStyles
+      styles: mapStyles,
+      ...(gestureMode ? { gestureHandling: gestureMode } : {}),
     };
 
     setMapOptions(newMapOptions);
     console.log('🗺️ Map options updated');
-  }, []); // Initialize once
+  }, [gestureMode]); // Initialize once, re-run if gestureMode changes
 
   // Debug API key loading
   console.log('Google Maps API Key:', GOOGLE_MAPS_CONFIG.apiKey ? 'PRESENT' : 'MISSING');
@@ -478,27 +389,29 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
   }
 
   return (
-    <div className="relative h-screen w-full" data-testid={dataTestId}>
+    <div className={`relative w-full ${embedMode ? 'h-full' : 'h-screen'}`} data-testid={dataTestId}>
 
-      {/* Top Navigation with integrated date picker and category pills */}
-      <TopNav
-        navButtons={navButtons}
-        onSearchClick={() => {
-          setIsFilterSheetOpen(true);
-          setIsFloatingPanelOpen(false);
-        }}
-        showDatePicker={showDatePicker}
-        datePickerProps={datePickerProps}
-        showCategoryPills={true}
-        categoryPillsContent={
-          <CategoryPills
-            filters={filters}
-            onFiltersChange={handleHierarchicalFiltersChange}
-            venues={venues}
-            inlineMode={true}
-          />
-        }
-      />
+      {/* Top Navigation - only rendered when NOT in embed mode (mobile overlay) */}
+      {!embedMode && (
+        <TopNav
+          navButtons={navButtons}
+          onSearchClick={() => {
+            setIsFilterSheetOpen(true);
+            setIsFloatingPanelOpen(false);
+          }}
+          showDatePicker={showDatePicker}
+          datePickerProps={datePickerProps}
+          showCategoryPills={true}
+          categoryPillsContent={
+            <CategoryPills
+              filters={filters}
+              onFiltersChange={handleHierarchicalFiltersChange}
+              venues={venues}
+              inlineMode={true}
+            />
+          }
+        />
+      )}
 
       {/* Attribute Pills - Venue/Energy/Timing/Status filtering */}
       {/* TEMPORARILY HIDDEN - Will be brought back when requested */}
@@ -522,6 +435,7 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
             console.log('🗺️ MAP CLICKED - Closing floating panel');
             setIsFloatingPanelOpen(false);
             setSelectedVenue(null);
+            onMapClick?.();
           }}
         >
         {/* Advanced Markers are now created directly in onMapLoad using clustering */}
@@ -567,17 +481,19 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
       />
 
       {/* Venue Floating Panel */}
-      <VenueFloatingPanel
-        venue={selectedVenue}
-        isOpen={isFloatingPanelOpen}
-        onClose={handleFloatingPanelClose}
-        filters={filters}
-        onFiltersChange={onFiltersChange}
-        onViewDetails={() => {
-          setIsFloatingPanelOpen(false);
-          setIsSidebarOpen(true);
-        }}
-      />
+      {!disableFloatingPanel && (
+        <VenueFloatingPanel
+          venue={selectedVenue}
+          isOpen={isFloatingPanelOpen}
+          onClose={handleFloatingPanelClose}
+          filters={filters}
+          onFiltersChange={onFiltersChange}
+          onViewDetails={() => {
+            setIsFloatingPanelOpen(false);
+            setIsSidebarOpen(true);
+          }}
+        />
+      )}
 
       {/* Filter Bottom Sheet */}
       <FilterBottomSheet

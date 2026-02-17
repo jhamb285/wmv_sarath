@@ -1,1 +1,6 @@
 node_modules
+.claude/
+nul
+.env*
+.DS_Store
+*.log

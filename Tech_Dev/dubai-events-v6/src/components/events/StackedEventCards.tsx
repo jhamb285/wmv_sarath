@@ -441,6 +441,15 @@ const EventCard: React.FC<EventCardProps> = ({
         ref={isExpanded ? contentRef : null}
         className="stacked-card-content"
       >
+        {/* Event Image */}
+        <div className="stacked-card-image-wrapper">
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW-pbYSH_W9UliC5eEBX7oWNcsAJN9LETGg&s"
+            alt={event.event_name}
+            className="stacked-card-image"
+          />
+        </div>
+
         {/* Date */}
         <div className="stacked-card-info-row">
           <div className="stacked-card-info-icon stacked-card-date-icon">

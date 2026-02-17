@@ -1,5 +1,5 @@
 /* ===========================================
-   VENUE FLOATING PANEL - GLASSMORPHISM STYLE
+   VENUE FLOATING PANEL - DARK PURPLE THEME
    (Adapted from StackedEventCards design)
    =========================================== */
 
@@ -17,27 +17,27 @@
   cursor: default;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Light Beige Glassmorphism Theme */
-  background: #fafaf8;
+  /* Dark Purple Glassmorphism Theme */
+  background: rgba(10, 10, 26, 0.95);
   backdrop-filter: blur(20px) saturate(150%);
   -webkit-backdrop-filter: blur(20px) saturate(150%);
-  border: 1.5px solid rgba(0, 0, 0, 0.08);
+  border: 1.5px solid rgba(124, 58, 237, 0.2);
   border-bottom: none;  /* No border at bottom */
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.08),
-    0 4px 12px rgba(0, 0, 0, 0.04);
-  color: #000000;  /* Default text color */
+    0 8px 24px rgba(0, 0, 0, 0.3),
+    0 4px 12px rgba(0, 0, 0, 0.2);
+  color: #e2e8f0;  /* Default text color */
 }
 
 /* Expanded state */
 .venue-panel-card.expanded {
-  background: #f5f3f0;
+  background: rgba(10, 10, 26, 0.98);
   backdrop-filter: blur(25px) saturate(160%);
   -webkit-backdrop-filter: blur(25px) saturate(160%);
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.1),
-    0 6px 16px rgba(0, 0, 0, 0.06);
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
+    0 12px 32px rgba(0, 0, 0, 0.4),
+    0 6px 16px rgba(0, 0, 0, 0.3);
+  border: 1.5px solid rgba(124, 58, 237, 0.3);
   border-bottom: none;
 }
 
@@ -71,7 +71,7 @@
 .venue-panel-event-title {
   font-size: 22px;
   font-weight: 400;
-  color: #ffffff;  /* White for dark theme */
+  color: #ffffff;
   line-height: 1.25;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   display: -webkit-box;
@@ -86,7 +86,7 @@
   align-items: center;
   justify-content: flex-start;
   gap: 6px;
-  color: #ffffff;  /* White for dark theme */
+  color: #ffffff;
   font-size: 14px;
   font-weight: 500;
 }
@@ -100,7 +100,7 @@
 /* Event Categories */
 .venue-panel-event-categories {
   font-size: 11px;
-  color: #0369a1;
+  color: #a78bfa;
   font-weight: 600;
   letter-spacing: 0.5px;
   text-transform: uppercase;
@@ -109,7 +109,7 @@
 
 .venue-panel-event-subtitle {
   font-size: 11px;
-  color: #0369a1;
+  color: #a78bfa;
   letter-spacing: 0.3px;
   line-height: 1.4;
   margin: 0;
@@ -126,38 +126,38 @@
   max-width: 50%;
 }
 
-/* Rating Badge - Gold theme for dark background */
+/* Rating Badge - Purple theme */
 .venue-panel-rating-badge {
   display: flex;
   align-items: center;
   gap: 3px;
-  background: rgba(253, 181, 20, 0.2);  /* Gold with transparency */
-  border: 1px solid rgba(253, 181, 20, 0.4);
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(124, 58, 237, 0.4);
   padding: 4px 10px;
   border-radius: 16px;
 }
 
 .venue-panel-star {
-  color: #fdb514;  /* Gold */
+  color: #a78bfa;
   font-size: 13px;
 }
 
 .venue-panel-rating-value {
   font-size: 13px;
   font-weight: 700;
-  color: #fdb514;  /* Gold */
+  color: #a78bfa;
 }
 
 .venue-panel-review-count {
   font-size: 11px;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Venue Name */
 .venue-panel-venue-name {
   font-size: 16px;
-  font-weight: 700;  /* Bolder for emphasis */
-  color: #ffffff;  /* White for dark theme */
+  font-weight: 700;
+  color: #ffffff;
   text-align: right;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -171,14 +171,14 @@
   text-overflow: ellipsis;
 }
 
-/* Location - GOLD/YELLOW */
+/* Location - Purple accent */
 .venue-panel-location-row {
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
-  color: #fdb514;  /* Gold/yellow for location text */
+  color: #a78bfa;
   font-size: 14px;
-  font-weight: 600;  /* Bolder */
+  font-weight: 600;
   text-align: right;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -227,7 +227,7 @@
   color: #ffffff;
 }
 
-/* Genre Tags (CYAN) - ALWAYS VISIBLE */
+/* Genre Tags (Purple) - ALWAYS VISIBLE */
 .venue-panel-genre-tags {
   display: flex;
   flex-wrap: wrap;
@@ -237,9 +237,9 @@
 }
 
 .venue-panel-genre-tag-cyan {
-  background: rgba(6, 182, 212, 0.15);
-  color: #06b6d4;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  background: rgba(124, 58, 237, 0.15);
+  color: #a78bfa;
+  border: 1px solid rgba(124, 58, 237, 0.3);
   padding: 4px 10px;
   border-radius: 6px;
   font-size: 11px;
@@ -287,43 +287,43 @@
 
 .venue-panel-date-tab {
   padding: 8px 16px;
-  background: #ffffff;  /* White for light theme */
-  border: 1.5px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(124, 58, 237, 0.15);
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);  /* Dark text */
+  color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
 }
 
 .venue-panel-date-tab:hover {
-  background: rgba(0, 0, 0, 0.02);  /* Slightly darker on hover */
-  border-color: rgba(0, 0, 0, 0.2);
-  color: rgba(0, 0, 0, 0.8);
+  background: rgba(124, 58, 237, 0.1);
+  border-color: rgba(124, 58, 237, 0.3);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .venue-panel-date-tab.active {
-  background: rgba(156, 39, 176, 0.1);  /* Light purple background */
-  border: 2px solid #9c27b0;  /* Purple border */
-  color: #000000;  /* Black text */
+  background: rgba(124, 58, 237, 0.3);
+  border: 2px solid #7c3aed;
+  color: #ffffff;
   font-weight: 600;
 }
 
-/* Today's date - red box indicator */
+/* Today's date - purple indicator */
 .venue-panel-date-tab.today {
-  background: #ff6b6b;  /* Red background */
-  border: 2px solid #ff6b6b;
-  color: #ffffff;  /* White text */
+  background: rgba(124, 58, 237, 0.5);
+  border: 2px solid #7c3aed;
+  color: #ffffff;
   font-weight: 700;
 }
 
 /* Today's date when active (selected) */
 .venue-panel-date-tab.today.active {
-  background: #ff6b6b;
+  background: rgba(124, 58, 237, 0.6);
   color: #ffffff;
-  border-color: #ff6b6b;
+  border-color: #7c3aed;
 }
 
 /* ===========================================
@@ -339,7 +339,7 @@
               opacity 0.3s ease-in-out 0.1s;
   margin-top: 0;
   scrollbar-width: thin;
-  scrollbar-color: rgba(167, 139, 250, 0.6) rgba(0, 0, 0, 0.2);
+  scrollbar-color: rgba(124, 58, 237, 0.6) rgba(0, 0, 0, 0.2);
 }
 
 .venue-panel-content::-webkit-scrollbar {
@@ -352,12 +352,12 @@
 }
 
 .venue-panel-content::-webkit-scrollbar-thumb {
-  background: rgba(167, 139, 250, 0.6);
+  background: rgba(124, 58, 237, 0.6);
   border-radius: 3px;
 }
 
 .venue-panel-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(167, 139, 250, 0.8);
+  background: rgba(124, 58, 237, 0.8);
 }
 
 .venue-panel-card.expanded .venue-panel-content {
@@ -388,11 +388,11 @@
   padding: 0;
   background: transparent;
   border: none;
-  font-size: 14px;  /* Slightly smaller for header */
-  font-weight: 700;  /* Bolder */
-  color: #000000;  /* Black text */
+  font-size: 14px;
+  font-weight: 700;
+  color: #e2e8f0;
   text-transform: uppercase;
-  letter-spacing: 0.3px;  /* Slightly reduced */
+  letter-spacing: 0.3px;
   line-height: 1.5;
   max-width: 100%;
   overflow-wrap: break-word;
@@ -400,13 +400,13 @@
 }
 
 .venue-panel-artist-separator {
-  color: rgba(0, 0, 0, 0.3);  /* Dark separator */
+  color: rgba(255, 255, 255, 0.3);
   font-weight: 400;
   font-size: 14px;
   margin: 0 8px;
 }
 
-/* Gradient fade effect below artists (indicates scrollable content) */
+/* Gradient fade effect below artists */
 .venue-panel-artists-gradient {
   position: absolute;
   bottom: 0;
@@ -415,9 +415,9 @@
   height: 24px;
   background: linear-gradient(
     to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.3) 100%
+    rgba(10, 10, 26, 0) 0%,
+    rgba(10, 10, 26, 0.5) 50%,
+    rgba(10, 10, 26, 0.8) 100%
   );
   pointer-events: none;
   z-index: 1;
@@ -450,29 +450,29 @@
   height: 20px;
 }
 
-/* Icon Colors */
+/* Icon Colors - Purple spectrum */
 .venue-panel-date-icon {
-  color: #0088cc;
+  color: #818cf8;
 }
 
 .venue-panel-entry-icon {
-  color: #e85d6f;
+  color: #f472b6;
 }
 
 .venue-panel-offers-icon {
-  color: #ffb800;
+  color: #fbbf24;
 }
 
 .venue-panel-genre-icon {
-  color: rgba(59, 130, 246, 0.95);
+  color: #818cf8;
 }
 
 .venue-panel-vibe-icon {
-  color: rgba(236, 72, 153, 0.95);
+  color: #c084fc;
 }
 
 .venue-panel-notes-icon {
-  color: #ffb800;
+  color: #fbbf24;
 }
 
 /* Info Content */
@@ -486,7 +486,7 @@
 .venue-panel-info-label {
   font-size: 10px;
   font-weight: 600;
-  color: #0088cc;
+  color: #a78bfa;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -494,7 +494,7 @@
 .venue-panel-info-value {
   font-size: 14px;
   font-weight: 500;
-  color: #000000;
+  color: #e2e8f0;
   line-height: 1.4;
 }
 
@@ -512,12 +512,12 @@
 
 .venue-panel-genre-badge {
   padding: 6px 12px;
-  background: rgba(0, 136, 204, 0.1);
-  border: 1px solid rgba(0, 136, 204, 0.3);
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.3);
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
-  color: #0088cc;  /* Blue for light theme */
+  color: #a78bfa;
 }
 
 /* Event Vibes */
@@ -530,40 +530,39 @@
 
 .venue-panel-vibe-badge {
   padding: 6px 12px;
-  background: rgba(156, 39, 176, 0.1);
-  border: 1px solid rgba(156, 39, 176, 0.3);
+  background: rgba(192, 132, 252, 0.15);
+  border: 1px solid rgba(192, 132, 252, 0.3);
   border-radius: 12px;
   font-size: 13px;
   font-weight: 500;
-  color: #9c27b0;  /* Purple for light theme */
+  color: #c084fc;
 }
 
 /* Confidence Score */
 .venue-panel-confidence-badge {
   padding: 6px 12px;
-  background: rgba(0, 191, 165, 0.1);
-  border: 1px solid rgba(0, 191, 165, 0.3);
+  background: rgba(34, 197, 94, 0.15);
+  border: 1px solid rgba(34, 197, 94, 0.3);
   border-radius: 12px;
   font-size: 13px;
   font-weight: 600;
-  color: #00bfa5;  /* Teal for light theme */
+  color: #4ade80;
 }
 
-/* Analysis Notes - YELLOW/ORANGE ITALIC */
+/* Analysis Notes */
 .venue-panel-analysis-notes {
   font-size: 13px;
-  color: #ffb800;  /* Yellow/Orange */
+  color: #fbbf24;
   font-style: italic;
   line-height: 1.6;
   margin-top: 4px;
-  font-style: italic;
 }
 
 /* Show More/Less Button */
 .venue-panel-show-more-btn {
   background: none;
   border: none;
-  color: rgba(251, 191, 36, 0.95);
+  color: #a78bfa;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
@@ -585,7 +584,7 @@
 .venue-panel-venue-details {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(124, 58, 237, 0.15);
 }
 
 .venue-panel-venue-detail-row {
@@ -594,13 +593,13 @@
   gap: 10px;
   margin-top: 10px;
   font-size: 14px;
-  color: #ffffff;  /* White text for dark theme */
+  color: #e2e8f0;
 }
 
 .venue-panel-venue-detail-row svg {
   width: 18px;
   height: 18px;
-  color: #06b6d4;  /* Cyan icons */
+  color: #a78bfa;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -614,8 +613,8 @@
   align-items: center;
   gap: 8px;
   padding: 10px 18px;
-  background: rgba(59, 130, 246, 0.1);
-  border: 1.5px solid rgba(59, 130, 246, 0.5);
+  background: rgba(124, 58, 237, 0.15);
+  border: 1.5px solid rgba(124, 58, 237, 0.4);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -626,21 +625,21 @@
 }
 
 .venue-panel-website-btn:hover {
-  background: rgba(59, 130, 246, 0.15);
-  border-color: #0369a1;
+  background: rgba(124, 58, 237, 0.25);
+  border-color: rgba(124, 58, 237, 0.6);
   transform: translateY(-2px);
 }
 
 .venue-panel-website-btn svg {
   width: 18px;
   height: 18px;
-  color: #0369a1;
+  color: #a78bfa;
 }
 
 .venue-panel-website-btn span {
   font-size: 14px;
   font-weight: 600;
-  color: #0369a1;
+  color: #a78bfa;
 }
 
 /* ===========================================
@@ -649,8 +648,8 @@
 
 .venue-panel-controls {
   position: absolute;
-  bottom: 80px;  /* Move further from bottom edge */
-  right: 32px;   /* Move further from right edge */
+  bottom: 80px;
+  right: 32px;
   z-index: 10;
   display: flex;
   gap: 12px;
@@ -660,11 +659,11 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(18, 18, 42, 0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  border: 1.5px solid rgba(124, 58, 237, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -675,11 +674,11 @@
 .venue-panel-control-button svg {
   width: 24px;
   height: 24px;
-  color: #000000;
+  color: #e2e8f0;
 }
 
 .venue-panel-control-button.expand:hover {
-  background: rgba(167, 139, 250, 0.95);
+  background: rgba(124, 58, 237, 0.8);
   transform: scale(1.1);
 }
 
@@ -688,7 +687,7 @@
 }
 
 .venue-panel-control-button.close {
-  background: rgba(239, 68, 68, 0.95);
+  background: rgba(239, 68, 68, 0.8);
   border-color: rgba(239, 68, 68, 0.3);
 }
 
@@ -711,10 +710,10 @@
   gap: 8px;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.8);  /* Light background for light theme */
+  background: rgba(18, 18, 42, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.15);
   border-radius: 40px;
   padding: 10px 14px;
   margin-top: 16px;
@@ -732,10 +731,10 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: #ffffff;  /* White background for light theme */
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border: 1.5px solid rgba(124, 58, 237, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -745,8 +744,8 @@
 }
 
 .venue-panel-action-btn:hover {
-  background: #f5f5f5;  /* Light gray on hover */
-  border-color: rgba(0, 0, 0, 0.15);
+  background: rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.4);
   transform: translateY(-2px);
 }
 
@@ -767,7 +766,7 @@
 }
 
 .venue-panel-share svg {
-  stroke: #000000;
+  stroke: #e2e8f0;
   stroke-width: 2;
 }
 
@@ -777,35 +776,35 @@
   align-items: center;
   gap: 6px;
   padding: 10px 16px;
-  background: #00bfa5;  /* Solid teal for light theme */
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 30px;
-  border: 1.5px solid rgba(0, 191, 165, 0.5);
+  border: 1.5px solid rgba(124, 58, 237, 0.5);
   cursor: pointer;
   transition: all 0.2s ease;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0, 191, 165, 0.25);  /* Teal shadow */
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
 }
 
 .venue-panel-directions-btn:hover {
-  background: #00a89a;  /* Darker teal on hover */
-  border-color: rgba(0, 191, 165, 0.7);
+  background: linear-gradient(135deg, #6d28d9, #5b21b6);
+  border-color: rgba(124, 58, 237, 0.7);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 191, 165, 0.35);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.4);
 }
 
 .venue-panel-directions-btn svg {
   width: 16px;
   height: 16px;
-  stroke: #ffffff;  /* White icon */
+  stroke: #ffffff;
   stroke-width: 2;
 }
 
 .venue-panel-directions-btn span {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;  /* White text */
+  color: #ffffff;
   white-space: nowrap;
 }
 
@@ -842,8 +841,8 @@
   }
 
   .venue-panel-controls {
-    bottom: 70px;  /* Move further from bottom edge */
-    right: 28px;   /* Move further from right edge */
+    bottom: 70px;
+    right: 28px;
   }
 
   .venue-panel-control-button {
@@ -949,7 +948,7 @@
 
   /* Gradient adjustments for mobile */
   .venue-panel-artists-gradient {
-    height: 20px;  /* Slightly shorter on mobile */
+    height: 20px;
   }
 
   .venue-panel-genre-badge,
@@ -964,8 +963,8 @@
 
   /* Controls adjustments */
   .venue-panel-controls {
-    bottom: 60px;  /* Move further from bottom edge */
-    right: 24px;   /* Move further from right edge */
+    bottom: 60px;
+    right: 24px;
     gap: 8px;
   }
 

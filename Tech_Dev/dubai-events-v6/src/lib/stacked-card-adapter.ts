@@ -250,9 +250,9 @@ export function transformSupabaseDataToStackedCards(
           lng: venue.venue_lng
         } : undefined,
 
-        // New field mappings
-        venue_website: venue.venue_website,
-        venue_address: venue.venue_address,
+        // New field mappings (API returns 'address'/'website', DB uses 'venue_*' prefix)
+        venue_website: venue.website || venue.venue_website,
+        venue_address: venue.address || venue.venue_address,
         venue_highlights: venue.venue_highlights,
         venue_atmosphere: venue.venue_atmosphere,
         attributes: venue.attributes,

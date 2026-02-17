@@ -155,14 +155,14 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
           isOpen ? 'translate-x-0' : 'translate-x-full'
         } ${
           isDarkMode
-            ? 'bg-gray-900/90 border-l border-gray-700/70 text-white'
+            ? 'bg-[#0a0a1a]/95 border-l border-purple-500/20 text-white'
             : 'bg-white/85 border-l border-gray-300/60 text-gray-900'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className={`p-4 border-b ${
-            isDarkMode ? 'border-gray-700/70' : 'border-gray-300/70'
+            isDarkMode ? 'border-purple-500/20' : 'border-gray-300/70'
           }`}>
             <div className="flex items-start justify-between">
               <div className="flex-1">
@@ -238,7 +238,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                         variant="secondary"
                         className={`capitalize border-2 font-semibold text-base px-3 py-1.5 ${
                           isDarkMode
-                            ? 'bg-slate-700/90 text-slate-200 border-slate-600'
+                            ? 'bg-purple-900/40 text-purple-200 border-purple-500/30'
                             : 'bg-white/90 text-gray-900 border-gray-400'
                         }`}
                       >
@@ -295,7 +295,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                         rel="noopener noreferrer"
                         className={`p-2 rounded-full transition-colors duration-200 ${
                           isDarkMode
-                            ? 'bg-slate-800/90 hover:bg-pink-600'
+                            ? 'bg-purple-900/40 hover:bg-pink-600 border border-purple-500/20'
                             : 'bg-white/90 hover:bg-pink-500 border border-gray-300/70'
                         }`}
                       >
@@ -311,7 +311,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                         href={`tel:${venue.phone}`}
                         className={`p-2 rounded-full transition-colors duration-200 ${
                           isDarkMode
-                            ? 'bg-slate-800/90 hover:bg-green-600'
+                            ? 'bg-purple-900/40 hover:bg-green-600 border border-purple-500/20'
                             : 'bg-white/90 hover:bg-green-500 border border-gray-300/70'
                         }`}
                       >
@@ -332,7 +332,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                 onClick={onClose}
                 className={`h-8 w-8 transition-colors ${
                   isDarkMode
-                    ? 'bg-slate-800/90 hover:bg-slate-700 text-slate-300 hover:text-white'
+                    ? 'bg-purple-900/40 hover:bg-purple-800/50 text-purple-300 hover:text-white border border-purple-500/20'
                     : 'bg-white/90 hover:bg-gray-100 text-gray-700 hover:text-gray-900 border border-gray-300/70'
                 }`}
               >
@@ -346,15 +346,15 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
             {/* Current Stories Section */}
             {hasLiveStories && (
               <div className={`py-4 border-b ${
-                isDarkMode ? 'border-slate-700/70' : 'border-gray-300/70'
+                isDarkMode ? 'border-purple-500/20' : 'border-gray-300/70'
               }`}>
                 <div className="flex items-center gap-2 mb-3">
-                  <Instagram className="h-5 w-5 text-yellow-500" />
+                  <Instagram className="h-5 w-5 text-purple-400" />
                   <h3 className={`text-lg font-semibold ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
                   }`}>Current Stories</h3>
                   <Badge variant="outline" className={`text-xs ${
-                    isDarkMode ? 'border-slate-600' : 'border-gray-300'
+                    isDarkMode ? 'border-purple-500/20' : 'border-gray-300'
                   }`}>
                     {currentStories.length}
                   </Badge>
@@ -374,7 +374,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                     key={story.story_id}
                     className={`rounded-lg p-4 mb-3 border ${
                       isDarkMode
-                        ? 'bg-slate-800/90 border-slate-700/80'
+                        ? 'bg-[#12122a]/90 border-purple-500/20'
                         : 'bg-white/90 border-gray-300/70'
                     }`}
                   >
@@ -385,13 +385,13 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                       rel="noopener noreferrer"
                       className={`block w-full h-32 rounded-md mb-3 flex items-center justify-center cursor-pointer transition-all duration-200 border-2 border-transparent hover:border-pink-500/50 ${
                         isDarkMode
-                          ? 'bg-slate-700 hover:bg-slate-600'
+                          ? 'bg-purple-900/30 hover:bg-purple-800/40'
                           : 'bg-gray-100 hover:bg-gray-50'
                       }`}
                     >
                       <div className={`text-center transition-colors ${
                         isDarkMode 
-                          ? 'text-slate-400 hover:text-pink-400' 
+                          ? 'text-purple-300/70 hover:text-pink-400' 
                           : 'text-gray-500 hover:text-pink-500'
                       }`}>
                         <Instagram className="h-8 w-8 mx-auto mb-2" />
@@ -463,7 +463,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
             {/* Event Information Section */}
             <div className="py-3">
               <div className="flex items-center gap-2 mb-4">
-                <Calendar className="h-5 w-5 text-yellow-500" />
+                <Calendar className="h-5 w-5 text-purple-400" />
                 <h3 className={`text-lg font-semibold ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}>Events Calendar</h3>
@@ -484,9 +484,9 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                           onClick={() => setSelectedDateKey(dateKey)}
                           className={`text-xs px-3 py-1.5 h-auto ${
                             selectedDateKey === dateKey
-                              ? "bg-yellow-600 text-black hover:bg-yellow-700"
+                              ? "bg-purple-600 text-white hover:bg-purple-700"
                               : isDarkMode
-                                ? "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                                ? "bg-purple-500/20 text-purple-200 hover:bg-slate-600"
                                 : "bg-white/50 text-gray-700 hover:bg-gray-100 border border-gray-200/50"
                           }`}
                         >
@@ -504,13 +504,13 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                       );
                     })}
                   </div>
-                  <Separator className={isDarkMode ? 'bg-slate-700' : 'bg-gray-200'} />
+                  <Separator className={isDarkMode ? 'bg-purple-500/20' : 'bg-gray-200'} />
                 </div>
               )}
 
               {eventsLoading && (
                 <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto"></div>
                   <p className={`text-sm mt-2 ${
                     isDarkMode ? 'text-white/70' : 'text-gray-600'
                   }`}>Loading events...</p>
@@ -531,7 +531,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
               {!eventsLoading && !eventsError && events.length === 0 && (
                 <Card className={`${
                   isDarkMode
-                    ? 'border-slate-700 bg-slate-800/90'
+                    ? 'border-purple-500/20 bg-[#12122a]/90'
                     : 'border-gray-300 bg-white/90'
                 }`}>
                   <CardContent className="pt-6">
@@ -551,7 +551,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                   {uniqueSelectedDateEvents.map((event) => (
                     <Card key={event.id} className={`backdrop-blur-sm shadow-lg ${
                       isDarkMode
-                        ? 'border-slate-600/80 bg-slate-800/95'
+                        ? 'border-purple-500/20 bg-[#12122a]/95'
                         : 'border-gray-300/80 bg-white/95'
                     }`}>
                       <CardHeader className="pb-1.5">
@@ -719,14 +719,14 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                     {/* Contact & Social */}
                         {(event.website_social || event.instagram_id) && (
                       <>
-                        <Separator className={isDarkMode ? 'bg-slate-700' : 'bg-gray-300'} />
+                        <Separator className={isDarkMode ? 'bg-purple-500/20' : 'bg-gray-300'} />
                         <div className="space-y-1">
                             {event.website_social && (
                             <div className="flex items-center gap-2">
                               <MessageCircle className="h-5 w-5 text-blue-400" />
                               <div>
                                 <p className={`text-sm ${
-                                  isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                                  isDarkMode ? 'text-purple-300/70' : 'text-gray-600'
                                 }`}>Contact</p>
                                 <p className={`text-base ${
                                   isDarkMode ? 'text-blue-300' : 'text-blue-700'
@@ -742,15 +742,15 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                     {/* Analysis Notes */}
                         {event.analysis_notes && (
                       <>
-                        <Separator className={isDarkMode ? 'bg-slate-700' : 'bg-gray-300'} />
+                        <Separator className={isDarkMode ? 'bg-purple-500/20' : 'bg-gray-300'} />
                         <div className="flex items-start gap-2">
                           <Target className="h-5 w-5 text-orange-400 mt-0.5" />
                           <div>
                             <p className={`text-sm mb-1 ${
-                              isDarkMode ? 'text-slate-400' : 'text-gray-600'
+                              isDarkMode ? 'text-purple-300/70' : 'text-gray-600'
                             }`}>Analysis Notes</p>
                             <p className={`text-xs leading-relaxed ${
-                              isDarkMode ? 'text-slate-300 opacity-75' : 'text-gray-600'
+                              isDarkMode ? 'text-purple-200 opacity-75' : 'text-gray-600'
                             }`}>
                               {event.analysis_notes.length > 150
                                 ? `${event.analysis_notes.substring(0, 150)}...`
@@ -771,7 +771,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
               {/* Venue Contact Details */}
               {venue && (venue.address || venue.phone || venue.website) && (
                 <div className={`pt-6 border-t ${
-                  isDarkMode ? 'border-slate-600' : 'border-gray-300'
+                  isDarkMode ? 'border-purple-500/20' : 'border-gray-300'
                 }`}>
                   <div className="flex items-center gap-2 mb-4">
                     <MessageCircle className="h-5 w-5 text-blue-400" />
@@ -786,7 +786,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                           <Phone className="h-4 w-4 text-blue-400" />
                         </div>
                         <span className={`text-sm font-medium ${
-                          isDarkMode ? 'text-slate-300' : 'text-gray-700'
+                          isDarkMode ? 'text-purple-200' : 'text-gray-700'
                         }`}>{venue.phone}</span>
                       </div>
                     )}
@@ -796,7 +796,7 @@ const VenueDetailsSidebar: React.FC<VenueDetailsSidebarProps> = ({
                           <MapPin className="h-4 w-4 text-green-400" />
                         </div>
                         <span className={`text-sm leading-relaxed ${
-                          isDarkMode ? 'text-slate-300' : 'text-gray-700'
+                          isDarkMode ? 'text-purple-200' : 'text-gray-700'
                         }`}>{venue.address}</span>
                       </div>
                     )}
