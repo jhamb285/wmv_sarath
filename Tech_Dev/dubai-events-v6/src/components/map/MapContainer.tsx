@@ -37,6 +37,7 @@ interface ExtendedMapContainerProps extends MapContainerProps {
   disableFloatingPanel?: boolean; // When true, skips rendering VenueFloatingPanel (parent handles venue display)
   gestureMode?: 'greedy' | 'cooperative'; // Controls map gesture handling. 'cooperative' requires two-finger pan (for embedded scrollable maps)
   onMapClick?: () => void; // Called when the map background is clicked (not a marker)
+  highlightedVenueId?: string | null; // Venue ID to highlight on the map with a pulsing effect
 }
 
 const MapContainer: React.FC<ExtendedMapContainerProps> = ({
@@ -55,6 +56,7 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
   disableFloatingPanel = false,
   gestureMode,
   onMapClick,
+  highlightedVenueId,
 }) => {
   console.log('🚨 MAP CONTAINER RENDER - Component is rendering!');
   console.log('🚨 MAP CONTAINER RENDER - Filters:', filters);
@@ -73,6 +75,8 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const markersRef = useRef<google.maps.Marker[]>([]);
+  const markersByVenueIdRef = useRef<Map<string, google.maps.Marker>>(new Map());
+  const highlightOverlayRef = useRef<google.maps.Marker | null>(null);
   const mapViewportRef = useRef({
     center: initialCenter || MAP_OPTIONS.center,
     zoom: initialZoom,
@@ -95,6 +99,11 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
       marker.setMap(null);
     });
     markersRef.current = [];
+    markersByVenueIdRef.current.clear();
+    if (highlightOverlayRef.current) {
+      highlightOverlayRef.current.setMap(null);
+      highlightOverlayRef.current = null;
+    }
     console.log('✅ All markers cleared');
   }, []);
 
@@ -200,8 +209,9 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
             icon: markerIcon,
           });
 
-          // Add marker to tracking array
+          // Add marker to tracking array and venue ID map
           markersRef.current.push(marker);
+          markersByVenueIdRef.current.set(String(venue.venue_id), marker);
 
           console.log(`✅ Marker created successfully for ${venue.name}:`, marker.getPosition()?.toJSON());
           console.log(`✅ Marker visible:`, marker.getVisible());
@@ -280,6 +290,86 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
       console.log('🔄 UPDATING MARKERS - No venues to display');
     }
   }, [venues, onMapLoad, clearMarkers]);
+
+  // Highlight the active venue marker with a pulsing ring + bounce
+  React.useEffect(() => {
+    if (!mapRef.current) return;
+
+    // Instantly remove previous highlight overlay
+    if (highlightOverlayRef.current) {
+      highlightOverlayRef.current.setMap(null);
+      highlightOverlayRef.current = null;
+    }
+
+    // Instantly reset ALL markers to normal
+    markersByVenueIdRef.current.forEach((marker, vid) => {
+      const v = venues.find(ve => String(ve.venue_id) === vid);
+      if (v) {
+        marker.setAnimation(null);
+        marker.setIcon(getMarkerIcon(v, filters, 32));
+        marker.setZIndex(1);
+      }
+    });
+
+    if (!highlightedVenueId) return;
+
+    const activeMarker = markersByVenueIdRef.current.get(highlightedVenueId);
+    if (!activeMarker) return;
+
+    const pos = activeMarker.getPosition();
+    if (!pos) return;
+
+    // Make the active marker larger and on top
+    const venue = venues.find(v => String(v.venue_id) === highlightedVenueId);
+    if (venue) {
+      activeMarker.setIcon(getMarkerIcon(venue, filters, 48));
+      activeMarker.setZIndex(999);
+    }
+
+    // Add animated pulsing ring overlay
+    const pulseIcon = {
+      url: `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80">
+          <circle cx="40" cy="40" r="28" fill="none" stroke="#7C3AED" stroke-width="3" opacity="0.6">
+            <animate attributeName="r" from="16" to="36" dur="1.5s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.7" to="0" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="40" cy="40" r="20" fill="none" stroke="#7C3AED" stroke-width="2" opacity="0.4">
+            <animate attributeName="r" from="12" to="30" dur="1.5s" begin="0.3s" repeatCount="indefinite"/>
+            <animate attributeName="opacity" from="0.5" to="0" dur="1.5s" begin="0.3s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+      `)}`,
+      scaledSize: new google.maps.Size(80, 80),
+      anchor: new google.maps.Point(40, 40),
+    };
+
+    const overlay = new google.maps.Marker({
+      position: pos,
+      map: mapRef.current,
+      icon: pulseIcon,
+      clickable: false,
+      zIndex: 998,
+    });
+
+    highlightOverlayRef.current = overlay;
+
+    // Keep the active marker bouncing continuously
+    activeMarker.setAnimation(google.maps.Animation.BOUNCE);
+
+    // Cleanup: instantly stop when effect re-runs (user swipes to next card)
+    return () => {
+      activeMarker.setAnimation(null);
+      if (venue) {
+        activeMarker.setIcon(getMarkerIcon(venue, filters, 32));
+        activeMarker.setZIndex(1);
+      }
+      if (highlightOverlayRef.current) {
+        highlightOverlayRef.current.setMap(null);
+        highlightOverlayRef.current = null;
+      }
+    };
+  }, [highlightedVenueId, venues, filters]);
 
   const onMapUnmount = useCallback(() => {
     mapRef.current = null;

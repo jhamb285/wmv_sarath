@@ -123,6 +123,7 @@ export default function Home() {
   const [desktopListView, setDesktopListView] = useState(false);
   const [listViewFullScreenId, setListViewFullScreenId] = useState<string | null>(null);
   const [mapClickCount, setMapClickCount] = useState(0);
+  const [highlightedVenueId, setHighlightedVenueId] = useState<string | null>(null);
 
   const handleDateChange = (dates: string[]) => {
     setFilters({ ...filters, activeDates: dates });
@@ -269,6 +270,7 @@ export default function Home() {
                 onFiltersChange={handleFiltersChange}
                 isLoading={isLoading}
                 onMapClick={() => setMapClickCount(c => c + 1)}
+                highlightedVenueId={highlightedVenueId}
               />
 
               {/* Event List — slides up from bottom when events exist */}
@@ -281,6 +283,7 @@ export default function Home() {
                 selectedDates={filters.activeDates}
                 onDateChange={handleDateChange}
                 dismissSignal={mapClickCount}
+                onActiveCardChange={setHighlightedVenueId}
               />
             </>
           ) : (

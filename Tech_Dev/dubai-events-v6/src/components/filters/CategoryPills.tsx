@@ -3,7 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  TrendingUp, Gift, Music, Building2, Users,
+  Music,
   Utensils, Laugh, Moon
 } from 'lucide-react';
 import { HierarchicalFilterState, EventCategoryFilterState, Venue } from '@/types';
@@ -21,15 +21,6 @@ interface CategoryPillsProps {
   venues: Venue[];
   inlineMode?: boolean;
 }
-
-// Quick filter definitions mapped to existing data
-const QUICK_FILTERS = [
-  { id: 'trending', label: 'Trending', icon: TrendingUp },
-  { id: 'free', label: 'Free', icon: Gift },
-  { id: 'live-music', label: 'Live Music', icon: Music },
-  { id: 'rooftop', label: 'Rooftop', icon: Building2 },
-  { id: 'family', label: 'Family', icon: Users },
-];
 
 // Icon mapping for primary categories
 const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -51,53 +42,11 @@ const CategoryPills: React.FC<CategoryPillsProps> = ({
     expandedPrimaries: []
   };
 
-  // Track active quick filters
-  const activeQuickFilters = (filters as any)._quickFilters || [];
-
   const getCategoryCount = (primaryCategory: string): number => {
     return venues.filter(venue => {
       const categories = venue.event_categories || [];
       return categories.some(cat => cat.primary === primaryCategory);
     }).length;
-  };
-
-  // Handle quick filter toggle
-  const handleQuickFilterClick = (filterId: string) => {
-    const isActive = activeQuickFilters.includes(filterId);
-    const newQuickFilters = isActive
-      ? activeQuickFilters.filter((f: string) => f !== filterId)
-      : [...activeQuickFilters, filterId];
-
-    // Build filter changes based on quick filter type
-    let updatedFilters = { ...filters, _quickFilters: newQuickFilters } as any;
-
-    // These quick filters are visual indicators; the actual filtering
-    // happens through the existing filter state fields
-    if (filterId === 'trending') {
-      updatedFilters.selectedRatings = isActive ? [] : [4];
-    } else if (filterId === 'free') {
-      updatedFilters.selectedTicketPrices = isActive ? [] : ['Free'];
-    } else if (filterId === 'live-music') {
-      if (!isActive) {
-        updatedFilters.eventCategories = {
-          ...eventCategories,
-          selectedPrimaries: [...new Set([...eventCategories.selectedPrimaries, 'Music Events'])],
-        };
-      } else {
-        updatedFilters.eventCategories = {
-          ...eventCategories,
-          selectedPrimaries: eventCategories.selectedPrimaries.filter(p => p !== 'Music Events'),
-          expandedPrimaries: eventCategories.expandedPrimaries.filter(p => p !== 'Music Events'),
-        };
-      }
-    } else if (filterId === 'rooftop') {
-      updatedFilters.attributes = {
-        ...(filters.attributes || { venue: [], energy: [], timing: [], status: [] }),
-        venue: isActive ? [] : ['Rooftop'],
-      };
-    }
-
-    onFiltersChange(updatedFilters);
   };
 
   const handlePrimaryClick = (category: string) => {
@@ -183,27 +132,6 @@ const CategoryPills: React.FC<CategoryPillsProps> = ({
 
   const pillsContent = (
     <div className="flex flex-col gap-2">
-      {/* Quick Filters Row */}
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-        {QUICK_FILTERS.map(({ id, label, icon: Icon }) => {
-          const isActive = activeQuickFilters.includes(id);
-          return (
-            <button
-              key={id}
-              onClick={() => handleQuickFilterClick(id)}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0 transition-all duration-200 ${
-                isActive
-                  ? 'bg-purple-600/30 text-purple-200 border border-purple-400/30 shadow-[0_2px_8px_rgba(124,58,237,0.2)]'
-                  : 'bg-white/[0.03] text-gray-400 border border-white/[0.06] hover:bg-white/[0.06] hover:text-gray-300 hover:border-white/[0.10]'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              {label}
-            </button>
-          );
-        })}
-      </div>
-
       {/* Primary Category Row with Icons */}
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-0.5" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
         {Object.keys(PRIMARY_CATEGORY_MAP).map(category => {
@@ -223,8 +151,8 @@ const CategoryPills: React.FC<CategoryPillsProps> = ({
               }`}
               style={{
                 color: '#ffffff',
-                background: isSelected ? `${hexColor}B3` : `${hexColor}25`,
-                border: `1px solid ${isSelected ? hexColor + '60' : hexColor + '20'}`,
+                background: isSelected ? hexColor : `${hexColor}CC`,
+                border: `1px solid ${isSelected ? hexColor : hexColor + '90'}`,
               }}
             >
               {IconComponent && <IconComponent className="w-3.5 h-3.5" />}
@@ -258,8 +186,8 @@ const CategoryPills: React.FC<CategoryPillsProps> = ({
                     }`}
                     style={{
                       color: '#ffffff',
-                      background: isSelected ? `${hexColor}CC` : `${hexColor}30`,
-                      border: `1px solid ${isSelected ? hexColor + '60' : hexColor + '20'}`,
+                      background: isSelected ? hexColor : `${hexColor}99`,
+                      border: `1px solid ${isSelected ? hexColor : hexColor + '60'}`,
                     }}
                   >
                     {secondary}

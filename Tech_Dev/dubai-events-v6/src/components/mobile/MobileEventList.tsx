@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import MobileEventCard from './MobileEventCard';
 import MobileMarkerCard from './MobileMarkerCard';
 
@@ -62,6 +62,7 @@ interface MobileEventListProps {
   selectedDates?: string[];
   onDateChange?: (dates: string[]) => void;
   dismissSignal?: number;
+  onActiveCardChange?: (venueId: string | null) => void;
 }
 
 // Two modes: 'list' shows all cards, 'marker' shows single venue card
@@ -76,6 +77,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
   selectedDates = [],
   onDateChange,
   dismissSignal = 0,
+  onActiveCardChange,
 }) => {
   const [mode, setMode] = useState<PanelMode>('list');
   const [markerVenueId, setMarkerVenueId] = useState<string | null>(null);
@@ -86,8 +88,46 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const prevSelectedVenueIdRef = useRef<number | null | undefined>(selectedVenueId);
+  const [activeCardIndex, setActiveCardIndex] = useState(0);
+  const internalDateChangeRef = useRef(false);
 
   const hasCards = cards.length > 0;
+
+  // Track active card via scroll position
+  const handleCarouselScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const scrollLeft = el.scrollLeft;
+    const cardWidth = el.offsetWidth * 0.85 + 12; // card width + gap
+    const index = Math.round(scrollLeft / cardWidth);
+    setActiveCardIndex(Math.min(index, cards.length - 1));
+  }, [cards.length]);
+
+  // Reset carousel position AND immediately highlight first card when cards/filters change
+  useEffect(() => {
+    setActiveCardIndex(0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = 0;
+    }
+    // Immediately notify parent of first card's venue
+    if (onActiveCardChange && cards.length > 0) {
+      onActiveCardChange(cards[0].venue.id);
+    } else if (onActiveCardChange) {
+      onActiveCardChange(null);
+    }
+  }, [activeDates, cards, onActiveCardChange]);
+
+  // Notify parent of active card's venue ID on scroll/mode changes
+  useEffect(() => {
+    if (mode === 'list' && hasCards && !isDismissed && onActiveCardChange) {
+      const activeCard = cards[activeCardIndex];
+      onActiveCardChange(activeCard?.venue.id || null);
+    } else if (mode === 'marker' && markerVenueId && onActiveCardChange) {
+      onActiveCardChange(markerVenueId);
+    } else if (onActiveCardChange && (isDismissed || !hasCards)) {
+      onActiveCardChange(null);
+    }
+  }, [activeCardIndex, mode, markerVenueId, hasCards, isDismissed, onActiveCardChange]);
 
   // Dismiss when parent signals (e.g. map click)
   useEffect(() => {
@@ -110,13 +150,27 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
     }
   }, [hasContent, isDismissed]);
 
-  // Date change → switch to list mode and show panel
+  // Date change → switch to list mode, collapse expanded card (unless from inside card), show panel
   useEffect(() => {
+    const isInternal = internalDateChangeRef.current;
+    internalDateChangeRef.current = false;
+
     setIsDismissed(false);
     setMode('list');
     setMarkerVenueId(null);
     setMarkerFullScreen(false);
+    if (!isInternal) {
+      setListFullScreenVenueId(null);
+    }
   }, [activeDates]);
+
+  // Cards changed (filter change) → collapse expanded card (skip if internal date change)
+  useEffect(() => {
+    if (!internalDateChangeRef.current) {
+      setListFullScreenVenueId(null);
+      setMarkerFullScreen(false);
+    }
+  }, [cards]);
 
   // Map marker click → switch to marker mode with single card
   useEffect(() => {
@@ -156,6 +210,12 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
     setIsDismissed(true);
   }, []);
 
+  // Wrapped onDateChange for expanded cards — marks as internal so effects don't collapse
+  const handleInternalDateChange = useCallback((dates: string[]) => {
+    internalDateChangeRef.current = true;
+    onDateChange?.(dates);
+  }, [onDateChange]);
+
   // Find card data for marker mode
   const markerCard = markerVenueId
     ? cards.find(c => c.venue.id === markerVenueId)
@@ -183,7 +243,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               onClose={handleMarkerClose}
               dateOptions={venueDateMap.get(markerCard.venue.id) || []}
               selectedDates={selectedDates}
-              onDateChange={onDateChange}
+              onDateChange={handleInternalDateChange}
             />
           )}
 
@@ -204,7 +264,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
                 onClose={handleMarkerClose}
                 dateOptions={venueDateMap.get(markerCard.venue.id) || []}
                 selectedDates={selectedDates}
-                onDateChange={onDateChange}
+                onDateChange={handleInternalDateChange}
               />
             </div>
           )}
@@ -228,33 +288,43 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               onClose={() => setListFullScreenVenueId(null)}
               dateOptions={venueDateMap.get(listFullScreenCard.venue.id) || []}
               selectedDates={selectedDates}
-              onDateChange={onDateChange}
+              onDateChange={handleInternalDateChange}
             />
           )}
 
-          {/* Bottom slide-up panel with scrollable card list */}
+          {/* Bottom slide-up carousel */}
           {hasCards && !listFullScreenVenueId && (
             <div
               className="absolute bottom-0 left-0 right-0 z-20 flex flex-col pointer-events-auto"
               style={{
-                maxHeight: '52%',
                 transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
                 transition: 'transform 0.4s cubic-bezier(0.32, 0.72, 0, 1)',
               }}
             >
-              {/* Scrollable card list */}
+              {/* Horizontal carousel */}
               <div
                 ref={scrollRef}
-                className="flex-1 overflow-y-auto px-3 pb-4 space-y-3"
+                className={`flex overflow-x-auto items-stretch ${cards.length === 1 ? 'justify-center' : ''}`}
                 style={{
                   scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  scrollSnapType: 'x mandatory',
+                  WebkitOverflowScrolling: 'touch',
+                  gap: '12px',
+                  padding: '0 12px 12px 12px',
                 }}
+                onScroll={handleCarouselScroll}
               >
                 {cards.map((card) => (
                   <div
                     key={card.event.id}
                     ref={(el) => {
                       if (el) cardRefs.current.set(card.venue.id, el);
+                    }}
+                    className="flex-shrink-0 flex"
+                    style={{
+                      width: '85%',
+                      scrollSnapAlign: 'center',
                     }}
                   >
                     <MobileEventCard
@@ -271,6 +341,25 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
                   </div>
                 ))}
               </div>
+
+              {/* Dot indicators */}
+              {cards.length > 1 && (
+                <div className="flex justify-center gap-1.5 pb-3">
+                  {cards.map((_, index) => (
+                    <div
+                      key={index}
+                      className="rounded-full transition-all duration-200"
+                      style={{
+                        width: index === activeCardIndex ? '16px' : '6px',
+                        height: '6px',
+                        background: index === activeCardIndex
+                          ? 'rgba(0, 0, 0, 0.6)'
+                          : 'rgba(0, 0, 0, 0.2)',
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </>

@@ -9,7 +9,7 @@ export interface CategoryConfig {
 export const PRIMARY_CATEGORY_MAP: Record<string, CategoryConfig> = {
   "Music Events": {
     display: "Music",
-    color: "purple"
+    color: "green"
   },
   "Sports & Viewing": {
     display: "Sports & Viewing",
@@ -17,11 +17,11 @@ export const PRIMARY_CATEGORY_MAP: Record<string, CategoryConfig> = {
   },
   "Food & Dining": {
     display: "Food & Drink",
-    color: "yellow"
+    color: "orange"
   },
   "Comedy & Entertainment": {
     display: "Comedy",
-    color: "orange"
+    color: "teal"
   },
   "Nightlife": {
     display: "Nightlife",

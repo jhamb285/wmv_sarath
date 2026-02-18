@@ -593,7 +593,7 @@ const MobileMarkerCard: React.FC<MobileMarkerCardProps> = ({
                   )}
                 </div>
 
-                {venue.venue_website && (
+                {(venue.venue_website || event.website_social) && (
                   <button
                     className="flex items-center gap-2 mt-3 px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all duration-200 active:scale-95 w-full justify-center"
                     style={{
@@ -601,7 +601,7 @@ const MobileMarkerCard: React.FC<MobileMarkerCardProps> = ({
                       color: 'rgb(96, 165, 250)',
                       border: '1px solid rgba(59, 130, 246, 0.2)',
                     }}
-                    onClick={(e) => { e.stopPropagation(); window.open(venue.venue_website, '_blank'); }}
+                    onClick={(e) => { e.stopPropagation(); window.open(venue.venue_website || event.website_social, '_blank'); }}
                   >
                     <ExternalLink className="w-4 h-4" />
                     Visit Website

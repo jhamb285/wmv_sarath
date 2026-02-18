@@ -2,7 +2,7 @@
 
 import React, { useMemo, useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, User, Search, Calendar, ChevronDown, List, Map as MapIcon, Menu } from 'lucide-react';
+import { LogOut, Search, List, Map as MapIcon, Menu } from 'lucide-react';
 import { Venue } from '@/types';
 import { parseDateFromFormat } from '@/lib/filters/date-utils';
 
@@ -275,11 +275,11 @@ const TopNav: React.FC<TopNavProps> = ({
           showDatePicker ? 'py-2.5 md:py-3' : 'py-2.5 md:py-3.5'
         }`}
         style={{
-          background: 'rgba(10, 10, 26, 0.98)',
+          background: 'rgba(255, 255, 255, 0.97)',
           backdropFilter: 'blur(24px) saturate(180%)',
           WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
-          boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.04) inset',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
         }}
       >
         <div className="flex flex-col gap-2">
@@ -290,24 +290,23 @@ const TopNav: React.FC<TopNavProps> = ({
               alt="Where's My Vibe"
               className="flex-shrink-0"
               style={{
-                filter: 'invert(1) brightness(2)',
                 width: '36px',
                 height: '36px',
                 objectFit: 'contain',
+                filter: 'brightness(0) opacity(0.45)',
               }}
             />
 
             <div className="flex-1 max-w-md mx-2 md:mx-4">
               <div className="relative cursor-pointer group" onClick={onSearchClick}>
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 stroke-[2.5] pointer-events-none transition-colors group-hover:text-purple-400" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 stroke-[2.5] pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search for your Vibe?"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-white placeholder:text-gray-500 focus:outline-none cursor-pointer transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none cursor-pointer transition-all duration-200"
                   style={{
-                    background: 'rgba(255,255,255,0.07)',
-                    border: '1px solid rgba(255,255,255,0.12)',
-                    boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.2)',
+                    background: 'rgba(0, 0, 0, 0.04)',
+                    border: '1px solid rgba(0, 0, 0, 0.08)',
                   }}
                   readOnly
                   onClick={onSearchClick}
@@ -320,18 +319,12 @@ const TopNav: React.FC<TopNavProps> = ({
                 onClick={onListToggle}
                 className="p-2.5 rounded-xl flex-shrink-0 transition-all duration-200 active:scale-90"
                 style={{
-                  background: isListView
-                    ? 'rgba(124, 58, 237, 0.3)'
-                    : 'rgba(124, 58, 237, 0.15)',
-                  border: `1px solid ${isListView ? 'rgba(124, 58, 237, 0.5)' : 'rgba(124, 58, 237, 0.25)'}`,
+                  background: 'rgba(0, 0, 0, 0.04)',
+                  border: '1px solid rgba(0, 0, 0, 0.08)',
                 }}
                 aria-label={isListView ? 'Show map' : 'Show event list'}
               >
-                {isListView ? (
-                  <MapIcon className="w-4 h-4 text-purple-300" />
-                ) : (
-                  <List className="w-4 h-4 text-purple-400" />
-                )}
+                <Menu className="w-4 h-4 text-gray-600" />
               </button>
             ) : (
               <div className="flex items-center gap-1.5 md:gap-2">
@@ -351,44 +344,52 @@ const TopNav: React.FC<TopNavProps> = ({
 
           {/* ROW 2: Date Picker */}
           {showDatePicker && datePickerProps && (
-            <div className="flex items-center gap-3 overflow-x-auto pt-3 pb-1 -mx-1 px-1 scrollbar-hide"
-                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <div className="flex items-center gap-3 overflow-x-auto pt-2 pb-1 -mx-1 px-1 scrollbar-hide"
+                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
               <button
                 onClick={() => handleDateClick('all')}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 ${
-                  isDateSelected('all')
-                    ? 'bg-purple-600/30 text-purple-300'
-                    : 'text-gray-500 hover:text-gray-300'
-                }`}
+                className="text-xs font-semibold px-3 py-3 rounded-xl transition-all duration-200 whitespace-nowrap flex-shrink-0"
+                style={{
+                  ...(isDateSelected('all')
+                    ? { background: 'rgba(0, 0, 0, 0.45)', color: '#fff' }
+                    : { color: '#9ca3af' }),
+                }}
               >
                 All Dates
               </button>
               {dateOptions.map((dateOption, index) => {
                 const isSelected = isDateSelected(dateOption.dateKey);
                 const isToday = dateOption.isToday;
+                const isWeekend = dateOption.isSaturday || dateOption.isSunday;
                 return (
                   <button
                     key={index}
                     onClick={() => handleDateClick(dateOption.dateKey)}
-                    className={`flex flex-col items-center px-3 py-1.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 relative ${
-                      isSelected
-                        ? 'bg-purple-600/30 shadow-[0_0_10px_rgba(124,58,237,0.3)]'
-                        : 'hover:bg-white/5'
-                    }`}
-                    style={isToday && !isSelected ? { border: '1px solid rgba(124,58,237,0.4)' } : {}}
+                    className="flex flex-col items-center px-3 py-1.5 rounded-xl transition-all duration-200 whitespace-nowrap flex-shrink-0 relative"
+                    style={{
+                      ...(isSelected
+                        ? { background: 'rgba(0, 0, 0, 0.45)', color: '#fff' }
+                        : isToday
+                          ? { border: '2px solid #EF4444' }
+                          : {}),
+                    }}
                   >
                     {isToday && (
-                      <span className="absolute -top-2 -right-2 text-[7px] font-bold px-1.5 py-0.5 rounded bg-purple-600 text-white">
+                      <span className="absolute -top-2 -right-2 text-[7px] font-bold px-1.5 py-0.5 rounded bg-red-500 text-white">
                         TODAY
                       </span>
                     )}
                     <span className={`text-[10px] font-semibold uppercase tracking-wider ${
-                      isSelected ? 'text-purple-300' : 'text-gray-500'
+                      isSelected ? 'text-white'
+                        : isWeekend ? 'text-red-500'
+                        : 'text-gray-400'
                     }`}>
                       {dateOption.day}
                     </span>
                     <span className={`text-[13px] font-bold ${
-                      isSelected ? 'text-white' : isToday ? 'text-purple-400' : 'text-gray-400'
+                      isSelected ? 'text-white'
+                        : isWeekend ? 'text-red-500'
+                        : 'text-gray-600'
                     }`}>
                       {dateOption.date}
                     </span>
