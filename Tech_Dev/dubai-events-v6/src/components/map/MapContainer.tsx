@@ -308,6 +308,7 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
         marker.setAnimation(null);
         marker.setIcon(getMarkerIcon(v, filters, 32));
         marker.setZIndex(1);
+        marker.setOpacity(1);
       }
     });
 
@@ -319,11 +320,19 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
     const pos = activeMarker.getPosition();
     if (!pos) return;
 
-    // Make the active marker larger and on top
+    // Dim all non-highlighted markers
+    markersByVenueIdRef.current.forEach((marker, vid) => {
+      if (vid !== highlightedVenueId) {
+        marker.setOpacity(0.4);
+      }
+    });
+
+    // Make the active marker larger, full opacity, and on top
     const venue = venues.find(v => String(v.venue_id) === highlightedVenueId);
     if (venue) {
       activeMarker.setIcon(getMarkerIcon(venue, filters, 48));
       activeMarker.setZIndex(999);
+      activeMarker.setOpacity(1);
     }
 
     // Add animated pulsing ring overlay
@@ -364,6 +373,10 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
         activeMarker.setIcon(getMarkerIcon(venue, filters, 32));
         activeMarker.setZIndex(1);
       }
+      // Restore opacity on all markers
+      markersByVenueIdRef.current.forEach((m) => {
+        m.setOpacity(1);
+      });
       if (highlightOverlayRef.current) {
         highlightOverlayRef.current.setMap(null);
         highlightOverlayRef.current = null;

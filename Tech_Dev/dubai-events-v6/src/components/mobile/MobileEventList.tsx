@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import MobileEventCard from './MobileEventCard';
 import MobileMarkerCard from './MobileMarkerCard';
 
@@ -55,6 +55,7 @@ interface DateOption {
 
 interface MobileEventListProps {
   cards: EventCardData[];
+  allCards?: EventCardData[];
   getCategoryColor: (category: string) => { hue: number; saturation: number };
   activeDates?: string[];
   selectedVenueId?: number | null;
@@ -70,6 +71,7 @@ type PanelMode = 'list' | 'marker';
 
 const MobileEventList: React.FC<MobileEventListProps> = ({
   cards,
+  allCards = [],
   getCategoryColor,
   activeDates,
   selectedVenueId,
@@ -89,7 +91,9 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
   const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
   const prevSelectedVenueIdRef = useRef<number | null | undefined>(selectedVenueId);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
-  const internalDateChangeRef = useRef(false);
+  const [expandedCardOverride, setExpandedCardOverride] = useState<EventCardData | null>(null);
+  const [expandedLocalDates, setExpandedLocalDates] = useState<string[]>([]);
+  const [miniCardOverrides, setMiniCardOverrides] = useState<Map<string, { card: EventCardData; dates: string[] }>>(new Map());
 
   const hasCards = cards.length > 0;
 
@@ -150,26 +154,25 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
     }
   }, [hasContent, isDismissed]);
 
-  // Date change → switch to list mode, collapse expanded card (unless from inside card), show panel
+  // Date change → switch to list mode, collapse expanded card, show panel
   useEffect(() => {
-    const isInternal = internalDateChangeRef.current;
-    internalDateChangeRef.current = false;
-
     setIsDismissed(false);
     setMode('list');
     setMarkerVenueId(null);
     setMarkerFullScreen(false);
-    if (!isInternal) {
-      setListFullScreenVenueId(null);
-    }
+    setListFullScreenVenueId(null);
+    setExpandedCardOverride(null);
+    setExpandedLocalDates([]);
+    setMiniCardOverrides(new Map());
   }, [activeDates]);
 
-  // Cards changed (filter change) → collapse expanded card (skip if internal date change)
+  // Cards changed (filter change) → collapse expanded card
   useEffect(() => {
-    if (!internalDateChangeRef.current) {
-      setListFullScreenVenueId(null);
-      setMarkerFullScreen(false);
-    }
+    setListFullScreenVenueId(null);
+    setMarkerFullScreen(false);
+    setExpandedCardOverride(null);
+    setExpandedLocalDates([]);
+    setMiniCardOverrides(new Map());
   }, [cards]);
 
   // Map marker click → switch to marker mode with single card
@@ -191,7 +194,14 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
 
   // --- List mode handlers ---
   const handleListFullScreenToggle = useCallback((venueId: string) => {
-    setListFullScreenVenueId(prev => prev === venueId ? null : venueId);
+    setListFullScreenVenueId(prev => {
+      if (prev === venueId) {
+        setExpandedCardOverride(null);
+        setExpandedLocalDates([]);
+        return null;
+      }
+      return venueId;
+    });
   }, []);
 
   const handleListDismiss = useCallback(() => {
@@ -210,21 +220,57 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
     setIsDismissed(true);
   }, []);
 
-  // Wrapped onDateChange for expanded cards — marks as internal so effects don't collapse
-  const handleInternalDateChange = useCallback((dates: string[]) => {
-    internalDateChangeRef.current = true;
-    onDateChange?.(dates);
-  }, [onDateChange]);
+  // Local date change for minicards — switches card data without changing global filter
+  const handleMiniCardDateChange = useCallback((venueId: string, dates: string[]) => {
+    const dateKey = dates[0];
+    if (!dateKey) return;
+    const matchingCard = allCards.find(c => {
+      if (c.venue.id !== venueId) return false;
+      try {
+        return new Date(c.event.event_date).toDateString() === dateKey;
+      } catch { return false; }
+    });
+    if (matchingCard) {
+      setMiniCardOverrides(prev => {
+        const next = new Map(prev);
+        next.set(venueId, { card: matchingCard, dates });
+        return next;
+      });
+    }
+  }, [allCards]);
+
+  // Local date change for expanded cards — switches card data without changing global filter
+  const handleExpandedDateChange = useCallback((venueId: string, dates: string[]) => {
+    const dateKey = dates[0];
+    if (!dateKey) return;
+    setExpandedLocalDates(dates);
+    // Find matching card for this venue on the new date from allCards
+    const matchingCard = allCards.find(c => {
+      if (c.venue.id !== venueId) return false;
+      try {
+        const cardDateKey = new Date(c.event.event_date).toDateString();
+        return cardDateKey === dateKey;
+      } catch { return false; }
+    });
+    if (matchingCard) {
+      setExpandedCardOverride(matchingCard);
+    }
+  }, [allCards]);
 
   // Find card data for marker mode
   const markerCard = markerVenueId
     ? cards.find(c => c.venue.id === markerVenueId)
     : null;
 
-  // Find card data for list full-screen
+  // Find card data for list full-screen (use override if user changed date inside card)
   const listFullScreenCard = listFullScreenVenueId
-    ? cards.find(c => c.venue.id === listFullScreenVenueId)
+    ? (expandedCardOverride && expandedCardOverride.venue.id === listFullScreenVenueId
+        ? expandedCardOverride
+        : cards.find(c => c.venue.id === listFullScreenVenueId))
     : null;
+
+  // Effective selected dates for expanded card (local override or global)
+  const expandedSelectedDates = expandedLocalDates.length > 0 ? expandedLocalDates : selectedDates;
 
   return (
     <>
@@ -243,7 +289,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               onClose={handleMarkerClose}
               dateOptions={venueDateMap.get(markerCard.venue.id) || []}
               selectedDates={selectedDates}
-              onDateChange={handleInternalDateChange}
+              onDateChange={onDateChange}
             />
           )}
 
@@ -264,7 +310,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
                 onClose={handleMarkerClose}
                 dateOptions={venueDateMap.get(markerCard.venue.id) || []}
                 selectedDates={selectedDates}
-                onDateChange={handleInternalDateChange}
+                onDateChange={onDateChange}
               />
             </div>
           )}
@@ -282,13 +328,13 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               card={listFullScreenCard}
               getCategoryColor={getCategoryColor}
               isExpanded={true}
-              onToggle={() => setListFullScreenVenueId(null)}
+              onToggle={() => { setListFullScreenVenueId(null); setExpandedCardOverride(null); setExpandedLocalDates([]); }}
               isFullScreen={true}
-              onFullScreenToggle={() => setListFullScreenVenueId(null)}
-              onClose={() => setListFullScreenVenueId(null)}
+              onFullScreenToggle={() => { setListFullScreenVenueId(null); setExpandedCardOverride(null); setExpandedLocalDates([]); }}
+              onClose={() => { setListFullScreenVenueId(null); setExpandedCardOverride(null); setExpandedLocalDates([]); }}
               dateOptions={venueDateMap.get(listFullScreenCard.venue.id) || []}
-              selectedDates={selectedDates}
-              onDateChange={handleInternalDateChange}
+              selectedDates={expandedSelectedDates}
+              onDateChange={(dates) => handleExpandedDateChange(listFullScreenCard.venue.id, dates)}
             />
           )}
 
@@ -315,31 +361,50 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
                 }}
                 onScroll={handleCarouselScroll}
               >
-                {cards.map((card) => (
-                  <div
-                    key={card.event.id}
-                    ref={(el) => {
-                      if (el) cardRefs.current.set(card.venue.id, el);
-                    }}
-                    className="flex-shrink-0 flex"
-                    style={{
-                      width: '85%',
-                      scrollSnapAlign: 'center',
-                    }}
-                  >
-                    <MobileEventCard
-                      card={card}
-                      getCategoryColor={getCategoryColor}
-                      isExpanded={true}
-                      onToggle={() => handleListFullScreenToggle(card.venue.id)}
-                      isFullScreen={false}
-                      onFullScreenToggle={() => handleListFullScreenToggle(card.venue.id)}
-                      onClose={handleListDismiss}
-                      dateOptions={venueDateMap.get(card.venue.id) || []}
-                      selectedDates={selectedDates}
-                    />
-                  </div>
-                ))}
+                {cards.map((card) => {
+                  const override = miniCardOverrides.get(card.venue.id);
+                  const displayCard = override ? override.card : card;
+                  const displayDates = override ? override.dates : selectedDates;
+                  return (
+                    <div
+                      key={card.event.id}
+                      ref={(el) => {
+                        if (el) cardRefs.current.set(card.venue.id, el);
+                      }}
+                      className="flex-shrink-0 flex"
+                      style={{
+                        width: cards.length === 1 ? '92%' : '85%',
+                        scrollSnapAlign: 'center',
+                      }}
+                    >
+                      <MobileEventCard
+                        card={displayCard}
+                        getCategoryColor={getCategoryColor}
+                        isExpanded={true}
+                        onToggle={() => {
+                          // Carry minicard override into expanded card
+                          if (override) {
+                            setExpandedCardOverride(override.card);
+                            setExpandedLocalDates(override.dates);
+                          }
+                          handleListFullScreenToggle(card.venue.id);
+                        }}
+                        isFullScreen={false}
+                        onFullScreenToggle={() => {
+                          if (override) {
+                            setExpandedCardOverride(override.card);
+                            setExpandedLocalDates(override.dates);
+                          }
+                          handleListFullScreenToggle(card.venue.id);
+                        }}
+                        onClose={handleListDismiss}
+                        dateOptions={venueDateMap.get(card.venue.id) || []}
+                        selectedDates={displayDates}
+                        onDateChange={(dates) => handleMiniCardDateChange(card.venue.id, dates)}
+                      />
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Dot indicators */}

@@ -94,15 +94,27 @@ export default function Home() {
 
   // Transform venues to card format for mobile list view
   const cards = useMemo(() => {
-    const allCards = transformSupabaseDataToStackedCards(filteredVenues);
-    const eventMap = new Map<string, typeof allCards[0]>();
-    allCards.forEach(card => {
+    const rawCards = transformSupabaseDataToStackedCards(filteredVenues);
+    const eventMap = new Map<string, typeof rawCards[0]>();
+    rawCards.forEach(card => {
       if (card.event.id && !eventMap.has(card.event.id)) {
         eventMap.set(card.event.id, card);
       }
     });
     return Array.from(eventMap.values());
   }, [filteredVenues]);
+
+  // All cards (unfiltered by date) for expanded card local date switching
+  const allCards = useMemo(() => {
+    const rawCards = transformSupabaseDataToStackedCards(allVenues);
+    const eventMap = new Map<string, typeof rawCards[0]>();
+    rawCards.forEach(card => {
+      if (card.event.id && !eventMap.has(card.event.id)) {
+        eventMap.set(card.event.id, card);
+      }
+    });
+    return Array.from(eventMap.values());
+  }, [allVenues]);
 
   // Deduplicate by venue_id for map markers
   const venues = useMemo(() => {
@@ -276,6 +288,7 @@ export default function Home() {
               {/* Event List — slides up from bottom when events exist */}
               <MobileEventList
                 cards={cards}
+                allCards={allCards}
                 getCategoryColor={getCategoryColorForStackedCards}
                 activeDates={filters.activeDates}
                 selectedVenueId={selectedVenue?.venue_id}

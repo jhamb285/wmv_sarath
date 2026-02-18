@@ -82,7 +82,12 @@ interface MobileEventCardProps {
   onDateChange?: (dates: string[]) => void;
 }
 
-const PLACEHOLDER_IMAGE = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW-pbYSH_W9UliC5eEBX7oWNcsAJN9LETGg&s';
+const PLACEHOLDER_IMAGES = [
+  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW-pbYSH_W9UliC5eEBX7oWNcsAJN9LETGg&s',
+  'https://images.musement.com/cover/0002/45/dubai-skyline-at-dusk-jpg_header-144981.jpeg',
+  'https://cdn.audleytravel.com/4571/3265/79/15992392-dubai-marina-skyline-dubai.jpg',
+];
+const PLACEHOLDER_IMAGE = PLACEHOLDER_IMAGES[0];
 
 function parseToArray(value: unknown): string[] {
   if (!value) return [];
@@ -126,7 +131,79 @@ const MobileEventCard: React.FC<MobileEventCardProps> = ({
   const { event, venue } = card;
   const expandedRef = useRef<HTMLDivElement>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const carouselTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const touchStartXRef = useRef<number>(0);
+  const touchDeltaXRef = useRef<number>(0);
+  const isDraggingRef = useRef(false);
 
+  // Infinite image list: [...images, first image clone] for seamless loop
+  const loopImages = [...PLACEHOLDER_IMAGES, PLACEHOLDER_IMAGES[0]];
+  const totalReal = PLACEHOLDER_IMAGES.length;
+
+  // Auto-advance carousel every 3s when fullscreen
+  useEffect(() => {
+    if (!isFullScreen) return;
+    carouselTimerRef.current = setInterval(() => {
+      setIsTransitioning(true);
+      setCarouselIndex(prev => prev + 1);
+    }, 3000);
+    return () => {
+      if (carouselTimerRef.current) clearInterval(carouselTimerRef.current);
+    };
+  }, [isFullScreen]);
+
+  // When transition ends on the clone slide, snap back to real first slide instantly
+  const handleCarouselTransitionEnd = () => {
+    if (carouselIndex >= totalReal) {
+      setIsTransitioning(false);
+      setCarouselIndex(0);
+    }
+  };
+
+  const resetCarouselTimer = () => {
+    if (carouselTimerRef.current) clearInterval(carouselTimerRef.current);
+    carouselTimerRef.current = setInterval(() => {
+      setIsTransitioning(true);
+      setCarouselIndex(prev => prev + 1);
+    }, 3000);
+  };
+
+  const goToSlide = (idx: number) => {
+    setIsTransitioning(true);
+    setCarouselIndex(idx);
+    resetCarouselTimer();
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchDeltaXRef.current = 0;
+    isDraggingRef.current = true;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDraggingRef.current) return;
+    touchDeltaXRef.current = e.touches[0].clientX - touchStartXRef.current;
+  };
+
+  const handleTouchEnd = () => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    const threshold = 50;
+    if (touchDeltaXRef.current < -threshold) {
+      // Swipe left → next
+      setIsTransitioning(true);
+      setCarouselIndex(prev => prev + 1);
+      resetCarouselTimer();
+    } else if (touchDeltaXRef.current > threshold) {
+      // Swipe right → prev (wrap around)
+      setIsTransitioning(true);
+      setCarouselIndex(prev => (prev - 1 + totalReal) % totalReal);
+      resetCarouselTimer();
+    }
+    touchDeltaXRef.current = 0;
+  };
 
   // Lock body scroll when full-screen
   useEffect(() => {
@@ -271,18 +348,73 @@ const MobileEventCard: React.FC<MobileEventCardProps> = ({
           className="flex-1 overflow-y-auto px-4 pb-24"
           style={{ scrollbarWidth: 'thin' }}
         >
-          {/* Divider + Event Image (always shown) */}
+          {/* Divider + Image Carousel (always shown) */}
           <div style={{ borderTop: '1px solid rgba(0, 0, 0, 0.06)' }} />
-          <div
-            className="my-3 rounded-2xl overflow-hidden"
-            style={{ border: '1px solid rgba(0, 0, 0, 0.08)' }}
-          >
-            <img
-              src={PLACEHOLDER_IMAGE}
-              alt={venue.venue_name}
-              className="w-full object-cover"
-              style={{ maxHeight: '260px' }}
-            />
+          <div className="my-3 relative">
+            {/* Carousel viewport */}
+            <div
+              className="overflow-hidden rounded-2xl"
+              style={{ border: '1px solid rgba(0, 0, 0, 0.08)' }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div
+                className="flex"
+                style={{
+                  transform: `translateX(-${carouselIndex * 100}%)`,
+                  transition: isTransitioning ? 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
+                }}
+                onTransitionEnd={handleCarouselTransitionEnd}
+              >
+                {loopImages.map((src, idx) => (
+                  <div key={idx} className="w-full flex-shrink-0 relative">
+                    <img
+                      src={src}
+                      alt={`${venue.venue_name} ${idx + 1}`}
+                      className="w-full object-cover"
+                      style={{ height: '220px' }}
+                      draggable={false}
+                    />
+                    {/* Gradient overlay at bottom for depth */}
+                    <div
+                      className="absolute bottom-0 left-0 right-0"
+                      style={{
+                        height: '60px',
+                        background: 'linear-gradient(to top, rgba(0,0,0,0.25), transparent)',
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Dot indicators */}
+            {totalReal > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-2.5">
+                {PLACEHOLDER_IMAGES.map((_, idx) => {
+                  const isActive = (carouselIndex % totalReal) === idx;
+                  return (
+                    <button
+                      key={idx}
+                      className="rounded-full transition-all duration-300"
+                      style={{
+                        width: isActive ? '20px' : '6px',
+                        height: '6px',
+                        background: isActive
+                          ? 'linear-gradient(135deg, #7c3aed, #a78bfa)'
+                          : 'rgba(0, 0, 0, 0.12)',
+                        boxShadow: isActive ? '0 1px 4px rgba(124, 58, 237, 0.4)' : 'none',
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        goToSlide(idx);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Date Pills */}
@@ -580,47 +712,50 @@ const MobileEventCard: React.FC<MobileEventCardProps> = ({
             borderTop: '1px solid rgba(0, 0, 0, 0.08)',
           }}
         >
-          {/* Circular icon buttons */}
-          <div className="flex items-center gap-2">
-            {venue.venue_instagram && (
+          {/* Icon buttons left, Get Directions right */}
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-3">
+              {venue.venue_instagram && (
+                <button
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
+                  style={{ background: 'rgba(90, 90, 90, 0.75)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)' }}
+                  onClick={handleInstagramClick}
+                >
+                  <Instagram className="w-[18px] h-[18px]" style={{ color: '#E1306C' }} />
+                </button>
+              )}
+              {venue.venue_phone && (
+                <button
+                  className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
+                  style={{ background: 'rgba(90, 90, 90, 0.75)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)' }}
+                  onClick={handleCallClick}
+                >
+                  <Phone className="w-[18px] h-[18px]" style={{ color: '#4ADE80' }} />
+                </button>
+              )}
               <button
                 className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
-                style={{ background: 'rgba(124, 58, 237, 0.15)' }}
-                onClick={handleInstagramClick}
+                style={{ background: 'rgba(90, 90, 90, 0.75)', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)' }}
+                onClick={handleShareClick}
               >
-                <Instagram className="w-[18px] h-[18px]" style={{ color: '#7c3aed' }} />
+                <Share2 className="w-[18px] h-[18px]" style={{ color: '#ffffff' }} />
               </button>
-            )}
-            {venue.venue_phone && (
-              <button
-                className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
-                style={{ background: 'rgba(124, 58, 237, 0.15)' }}
-                onClick={handleCallClick}
-              >
-                <Phone className="w-[18px] h-[18px]" style={{ color: '#7c3aed' }} />
-              </button>
-            )}
+            </div>
+
+            {/* Get Directions pill button */}
             <button
-              className="w-10 h-10 rounded-full flex items-center justify-center transition-all active:scale-90"
-              style={{ background: 'rgba(124, 58, 237, 0.15)' }}
-              onClick={handleShareClick}
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-full text-[13px] font-semibold transition-all active:scale-95"
+              style={{
+                background: 'rgba(90, 90, 90, 0.75)',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+                color: '#ffffff',
+              }}
+              onClick={handleDirectionsClick}
             >
-              <Share2 className="w-[18px] h-[18px]" style={{ color: '#7c3aed' }} />
+              <Navigation className="w-4 h-4" style={{ color: '#4ADE80' }} />
+              <span>Get Directions</span>
             </button>
           </div>
-
-          {/* Get Directions pill button */}
-          <button
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-full text-[13px] font-semibold transition-all active:scale-95"
-            style={{
-              background: 'rgba(124, 58, 237, 0.85)',
-              color: '#ffffff',
-            }}
-            onClick={handleDirectionsClick}
-          >
-            <Navigation className="w-4 h-4" />
-            <span>Get Directions</span>
-          </button>
         </div>
       </div>
     );

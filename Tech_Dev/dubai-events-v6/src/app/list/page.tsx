@@ -110,24 +110,16 @@ export default function ListView() {
     return Array.from(eventMap.values());
   }, [filteredVenues]);
 
-  // View toggle buttons
+  // View toggle button — only map icon on list page
   const viewToggleButtons = (
-    <>
-      <button
-        onClick={() => router.push('/')}
-        className="p-2 rounded-full bg-blue-400 text-white backdrop-blur-sm border border-blue-300 hover:bg-blue-500 transition-all"
-        title="Map View"
-      >
-        <MapIcon className="w-4 h-4 md:w-5 md:h-5" />
-      </button>
-      <button
-        onClick={() => router.push('/list')}
-        className="p-2 rounded-full bg-blue-500 text-white backdrop-blur-sm border border-blue-400 hover:bg-blue-600 transition-all"
-        title="List View"
-      >
-        <ListIcon className="w-4 h-4 md:w-5 md:h-5" />
-      </button>
-    </>
+    <button
+      onClick={() => router.push('/')}
+      className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-90"
+      style={{ background: 'rgba(59, 130, 246, 0.9)' }}
+      title="Map View"
+    >
+      <MapIcon className="w-[18px] h-[18px] text-white" />
+    </button>
   );
 
 

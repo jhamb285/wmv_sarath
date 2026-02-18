@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useMemo, useEffect, useState } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, Search, List, Map as MapIcon, Menu } from 'lucide-react';
+import { LogOut, Search, List, Map as MapIcon } from 'lucide-react';
 import { Venue } from '@/types';
 import { parseDateFromFormat } from '@/lib/filters/date-utils';
 
@@ -38,6 +39,8 @@ const TopNav: React.FC<TopNavProps> = ({
   onListToggle,
   isListView = false,
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const { user, signOut } = useAuth();
 
   const [filterOptions, setFilterOptions] = useState<{ dates?: string[] } | null>(null);
@@ -316,15 +319,18 @@ const TopNav: React.FC<TopNavProps> = ({
 
             {hideProfile ? (
               <button
-                onClick={onListToggle}
-                className="p-2.5 rounded-xl flex-shrink-0 transition-all duration-200 active:scale-90"
+                onClick={() => router.push(pathname === '/list' ? '/' : '/list')}
+                className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 active:scale-90 flex-shrink-0"
                 style={{
-                  background: 'rgba(0, 0, 0, 0.04)',
-                  border: '1px solid rgba(0, 0, 0, 0.08)',
+                  background: 'rgba(59, 130, 246, 0.9)',
                 }}
-                aria-label={isListView ? 'Show map' : 'Show event list'}
+                aria-label={pathname === '/list' ? 'Show map' : 'Show event list'}
               >
-                <Menu className="w-4 h-4 text-gray-600" />
+                {pathname === '/list' ? (
+                  <MapIcon className="w-[18px] h-[18px] text-white" />
+                ) : (
+                  <List className="w-[18px] h-[18px] text-white" />
+                )}
               </button>
             ) : (
               <div className="flex items-center gap-1.5 md:gap-2">
