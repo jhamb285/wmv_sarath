@@ -370,56 +370,56 @@ const EventCard: React.FC<EventCardProps> = ({
       } as React.CSSProperties}
       onClick={() => onCardClick(event.id)}
     >
-      {/* HEADER */}
-      <div className="stacked-card-header">
-        {/* Left Column - 65% */}
-        <div className="stacked-card-header-left">
+      {/* HEADER — All info left, small image right */}
+      <div className="stacked-card-header" style={{ alignItems: 'flex-start', gap: '12px' }}>
+        {/* Left Column — stacked info */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {/* Event Name */}
           <h2 className="stacked-card-event-title">
             {event.event_name}
           </h2>
 
-          {/* Time Row - Inside Header */}
-          {(event.event_time_start || event.event_time_end) && (
-            <div className="stacked-card-time-row">
-              <ClockIcon />
-              <span>
-                {formatTime(event.event_time_start)}
-                {event.event_time_end && ` - ${formatTime(event.event_time_end)}`}
-              </span>
-            </div>
-          )}
+          {/* Venue Name */}
+          <span className="stacked-card-venue-name" style={{ display: 'block', marginTop: '4px' }}>{venue.venue_name}</span>
 
-          {/* Subtitle - Inside Header */}
+          {/* Rating + Location */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '4px', flexWrap: 'wrap' }}>
+            <span className="stacked-card-star">★</span>
+            <span className="stacked-card-rating-value">{venue.venue_rating}</span>
+            <span className="stacked-card-review-count">({venue.venue_review_count.toLocaleString()})</span>
+            <span style={{ color: 'rgba(255,255,255,0.15)', margin: '0 2px' }}>|</span>
+            <span style={{ color: 'rgba(200, 200, 220, 0.7)', fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{venue.venue_location}</span>
+          </div>
+
+          {/* Category Tags (Subtitle) */}
           {(() => {
             const smartSubtitle = generateSmartSubtitle(
               event.event_name,
               venue.venue_name,
               event.event_subtitle
             );
-
             if (!smartSubtitle) return null;
-
             return (
-              <div className="stacked-card-event-section">
-                <p className="stacked-card-event-subtitle">
-                  {smartSubtitle.toUpperCase()}
-                </p>
-              </div>
+              <p className="stacked-card-event-subtitle" style={{ marginTop: '6px' }}>
+                {smartSubtitle.toUpperCase()}
+              </p>
             );
           })()}
         </div>
 
-        {/* Right Column - Fixed Width */}
-        <div className="stacked-card-header-right">
-          <div className="stacked-card-rating-badge">
-            <span className="stacked-card-star">★</span>
-            <span className="stacked-card-rating-value">{venue.venue_rating}</span>
-            <span className="stacked-card-review-count">({venue.venue_review_count.toLocaleString()})</span>
-          </div>
-          <span className="stacked-card-venue-name">{venue.venue_name}</span>
-          <div className="stacked-card-location-row">
-            <span>{venue.venue_location}</span>
-          </div>
+        {/* Right — Small image, stretches to match left content height */}
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'stretch' }}>
+          <img
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW-pbYSH_W9UliC5eEBX7oWNcsAJN9LETGg&s"
+            alt={event.event_name}
+            style={{
+              width: '88px',
+              minHeight: '110px',
+              borderRadius: '12px',
+              objectFit: 'cover',
+              border: '1.5px solid rgba(255,255,255,0.1)',
+            }}
+          />
         </div>
       </div>
 
@@ -441,15 +441,6 @@ const EventCard: React.FC<EventCardProps> = ({
         ref={isExpanded ? contentRef : null}
         className="stacked-card-content"
       >
-        {/* Event Image */}
-        <div className="stacked-card-image-wrapper">
-          <img
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVW-pbYSH_W9UliC5eEBX7oWNcsAJN9LETGg&s"
-            alt={event.event_name}
-            className="stacked-card-image"
-          />
-        </div>
-
         {/* Date */}
         <div className="stacked-card-info-row">
           <div className="stacked-card-info-icon stacked-card-date-icon">
