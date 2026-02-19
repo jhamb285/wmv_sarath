@@ -1,7 +1,7 @@
 'use client';
 
 // List view with integrated TopNav date picker
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Map as MapIcon, List as ListIcon } from 'lucide-react';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -54,6 +54,8 @@ export default function ListView() {
 
   // State for filter sheet modal
   const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [navHeight, setNavHeight] = useState(130);
+  const handleNavHeightChange = useCallback((h: number) => setNavHeight(h), []);
 
   // Get filter options for FilterBottomSheet
   const { filterOptions } = useFilterOptions();
@@ -156,12 +158,13 @@ export default function ListView() {
               inlineMode={true}
             />
           }
+          onHeightChange={handleNavHeightChange}
         />
 
         {/* Stacked Event Cards - fixed scroll area below navbar */}
         <div
-          className="fixed top-[190px] md:top-[210px] left-1.5 md:left-2 right-1.5 md:right-2 bottom-0 z-10 overflow-y-auto rounded-2xl"
-          style={{ backgroundColor: '#1a1917' }}
+          className="fixed md:top-[210px] left-1.5 md:left-2 right-1.5 md:right-2 bottom-0 z-10 overflow-y-auto rounded-2xl"
+          style={{ backgroundColor: '#1a1917', top: `${navHeight + 8}px` }}
         >
           <StackedEventCards
             cards={cards}

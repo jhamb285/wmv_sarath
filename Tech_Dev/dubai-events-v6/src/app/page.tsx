@@ -165,6 +165,7 @@ export default function Home() {
   const [mapClickCount, setMapClickCount] = useState(0);
   const [highlightedVenueId, setHighlightedVenueId] = useState<string | null>(null);
   const [presetRangeDates, setPresetRangeDates] = useState<string[]>([]);
+  const [navHeight, setNavHeight] = useState(140);
 
   const handleDateChange = (dates: string[]) => {
     setFilters({ ...filters, activeDates: dates });
@@ -305,6 +306,7 @@ export default function Home() {
             onListToggle={() => setMobileView(prev => prev === 'map' ? 'list' : 'map')}
             isListView={mobileView === 'list'}
             onPresetRangeDatesChange={handlePresetRangeDatesChange}
+            onHeightChange={setNavHeight}
           />
 
           {mobileView === 'map' ? (
@@ -333,6 +335,7 @@ export default function Home() {
                 dismissSignal={mapClickCount}
                 onActiveCardChange={setHighlightedVenueId}
                 presetRangeDates={presetRangeDates}
+                navHeight={navHeight}
               />
             </>
           ) : (
@@ -340,7 +343,7 @@ export default function Home() {
             <div
               className="absolute inset-0 overflow-y-auto px-3 pb-6 space-y-2"
               style={{
-                top: '185px',
+                top: `${navHeight + 8}px`,
                 backgroundColor: 'rgba(10, 10, 26, 1)',
               }}
             >
@@ -370,6 +373,7 @@ export default function Home() {
                       onDateChange={handleDateChange}
                       isPresetRange={presetRangeDates.length > 0}
                       presetRangeDates={presetRangeDates}
+                      navHeight={navHeight}
                     />
                   ))}
                 </>

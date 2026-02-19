@@ -89,6 +89,7 @@ interface TopNavProps {
   onListToggle?: () => void; // Toggle between map and list views
   isListView?: boolean; // Current view mode
   onPresetRangeDatesChange?: (dates: string[]) => void; // Notify parent of preset range dates
+  onHeightChange?: (height: number) => void; // Notify parent of nav height (mobile only)
 }
 
 const TopNav: React.FC<TopNavProps> = ({
@@ -103,6 +104,7 @@ const TopNav: React.FC<TopNavProps> = ({
   onListToggle,
   isListView = false,
   onPresetRangeDatesChange,
+  onHeightChange,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -114,6 +116,20 @@ const TopNav: React.FC<TopNavProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileDateScrollRef = useRef<HTMLDivElement>(null);
   const todayPillRef = useRef<HTMLButtonElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
+
+  // Measure mobile nav height and notify parent
+  useEffect(() => {
+    if (embedded || !onHeightChange || !mobileNavRef.current) return;
+    const el = mobileNavRef.current;
+    const observer = new ResizeObserver(() => {
+      onHeightChange(el.offsetTop + el.offsetHeight);
+    });
+    observer.observe(el);
+    // Fire initial measurement
+    onHeightChange(el.offsetTop + el.offsetHeight);
+    return () => observer.disconnect();
+  }, [embedded, onHeightChange]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -444,10 +460,10 @@ const TopNav: React.FC<TopNavProps> = ({
 
   // --- MOBILE OVERLAY LAYOUT (original) ---
   return (
-    <div className="fixed top-1.5 md:top-2 left-1.5 md:left-2 right-1.5 md:right-2 z-50">
+    <div ref={mobileNavRef} className="fixed top-1.5 md:top-2 left-1.5 md:left-2 right-1.5 md:right-2 z-50">
       <div
         className={`px-3 md:px-4 rounded-2xl relative ${
-          showDatePicker ? 'py-2.5 md:py-3' : 'py-2.5 md:py-3.5'
+          showDatePicker ? 'py-1.5 md:py-3' : 'py-2 md:py-3.5'
         }`}
         style={{
           background: 'rgba(255, 255, 255, 0.97)',
@@ -457,7 +473,7 @@ const TopNav: React.FC<TopNavProps> = ({
           boxShadow: '0 2px 12px rgba(0, 0, 0, 0.1)',
         }}
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           {/* ROW 1: Logo, Search, Buttons */}
           <div className="flex items-center justify-between">
             <img
@@ -465,8 +481,8 @@ const TopNav: React.FC<TopNavProps> = ({
               alt="Where's My Vibe"
               className="flex-shrink-0"
               style={{
-                width: '36px',
-                height: '36px',
+                width: '30px',
+                height: '30px',
                 objectFit: 'contain',
                 filter: 'brightness(0) opacity(0.45)',
               }}
@@ -478,7 +494,7 @@ const TopNav: React.FC<TopNavProps> = ({
                 <input
                   type="text"
                   placeholder="Search for your Vibe?"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none cursor-pointer transition-all duration-200"
+                  className="w-full pl-10 pr-4 py-1.5 rounded-xl text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none cursor-pointer transition-all duration-200"
                   style={{
                     background: 'rgba(0, 0, 0, 0.04)',
                     border: '1px solid rgba(0, 0, 0, 0.08)',
@@ -522,20 +538,19 @@ const TopNav: React.FC<TopNavProps> = ({
 
           {/* ROW 2: Date Picker */}
           {showDatePicker && datePickerProps && (
-            <div className="flex items-center gap-2 pt-2 pb-1 -mx-1 px-1"
-                 style={{ borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+            <div className="flex items-center gap-2 pt-0 pb-0 -mx-1 px-1">
               {/* Date Range Dropdown — outside scroll area so it's not clipped */}
               <div ref={dropdownRef} className="relative flex-shrink-0 z-10">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="text-xs font-semibold px-3 py-3 rounded-xl transition-all duration-200 whitespace-nowrap flex items-center gap-1.5"
+                  className="text-[10px] font-semibold px-2.5 py-1.5 rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-1"
                   style={{
                     background: 'rgba(0, 0, 0, 0.45)',
                     color: '#fff',
                   }}
                 >
                   {PRESET_LABELS[selectedPreset]}
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-3 h-3 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isDropdownOpen && (
                   <div
@@ -567,7 +582,7 @@ const TopNav: React.FC<TopNavProps> = ({
               </div>
               {/* Scrollable date pills — wrapper clips content so pills never bleed behind dropdown */}
               <div className="flex-1 min-w-0 overflow-hidden">
-                <div ref={mobileDateScrollRef} className="flex items-center gap-3 overflow-x-auto scrollbar-hide pt-2 pb-1"
+                <div ref={mobileDateScrollRef} className="flex items-center gap-2 overflow-x-auto scrollbar-hide pt-0.5 pb-0.5"
                      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 {dateOptions.map((dateOption, index) => {
                   const isClicked = isDateSelected(dateOption.dateKey);
@@ -580,7 +595,7 @@ const TopNav: React.FC<TopNavProps> = ({
                       key={index}
                       ref={isToday ? todayPillRef : undefined}
                       onClick={() => handleDateClick(dateOption.dateKey)}
-                      className="flex flex-col items-center px-3 py-1.5 rounded-xl transition-all duration-200 whitespace-nowrap flex-shrink-0 relative"
+                      className="flex flex-col items-center px-2 py-0.5 rounded-lg transition-all duration-200 whitespace-nowrap flex-shrink-0 relative"
                       style={{
                         ...(isFullSelected
                           ? { background: 'rgba(0, 0, 0, 0.45)', color: '#fff' }
@@ -594,18 +609,18 @@ const TopNav: React.FC<TopNavProps> = ({
                       }}
                     >
                       {isToday && (
-                        <span className="absolute -top-2 -right-2 text-[7px] font-bold px-1.5 py-0.5 rounded bg-red-500 text-white">
+                        <span className="absolute -top-1.5 -right-1.5 text-[6px] font-bold px-1 py-px rounded bg-red-500 text-white">
                           TODAY
                         </span>
                       )}
-                      <span className={`text-[10px] font-semibold uppercase tracking-wider ${
+                      <span className={`text-[8px] font-semibold uppercase tracking-wider leading-tight ${
                         isFullSelected ? 'text-white'
                           : isWeekend ? 'text-red-500'
                           : 'text-gray-400'
                       }`}>
                         {dateOption.day}
                       </span>
-                      <span className={`text-[13px] font-bold ${
+                      <span className={`text-[11px] font-bold leading-tight ${
                         isFullSelected ? 'text-white'
                           : isWeekend ? 'text-red-500'
                           : 'text-gray-600'

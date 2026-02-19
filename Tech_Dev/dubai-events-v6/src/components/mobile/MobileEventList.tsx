@@ -64,6 +64,7 @@ interface MobileEventListProps {
   dismissSignal?: number;
   onActiveCardChange?: (venueId: string | null) => void;
   presetRangeDates?: string[];
+  navHeight?: number;
 }
 
 // Two modes: 'list' shows all cards, 'marker' shows single venue card
@@ -81,6 +82,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
   dismissSignal = 0,
   onActiveCardChange,
   presetRangeDates = [],
+  navHeight = 140,
 }) => {
   const [mode, setMode] = useState<PanelMode>('list');
   const [markerVenueId, setMarkerVenueId] = useState<string | null>(null);
@@ -344,6 +346,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               onDateChange={onDateChange}
               isPresetRange={isPresetRange}
               presetRangeDates={presetRangeDates}
+              navHeight={navHeight}
             />
           )}
 
@@ -395,6 +398,7 @@ const MobileEventList: React.FC<MobileEventListProps> = ({
               onDateChange={(dates) => handleExpandedDateChange(listFullScreenCard.venue.id, dates)}
               isPresetRange={isPresetRange}
               presetRangeDates={presetRangeDates}
+              navHeight={navHeight}
             />
           )}
 

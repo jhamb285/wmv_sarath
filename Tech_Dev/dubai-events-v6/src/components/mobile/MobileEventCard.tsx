@@ -82,6 +82,7 @@ interface MobileEventCardProps {
   onDateChange?: (dates: string[]) => void;
   isPresetRange?: boolean;
   presetRangeDates?: string[];
+  navHeight?: number;
 }
 
 const PLACEHOLDER_IMAGES = [
@@ -131,6 +132,7 @@ const MobileEventCard: React.FC<MobileEventCardProps> = ({
   onDateChange,
   isPresetRange = false,
   presetRangeDates = [],
+  navHeight = 140,
 }) => {
   const { event, venue } = card;
   const expandedRef = useRef<HTMLDivElement>(null);
@@ -307,7 +309,7 @@ const MobileEventCard: React.FC<MobileEventCardProps> = ({
         className="fixed z-[60] flex flex-col rounded-2xl overflow-hidden"
         style={{
           background: 'rgba(255, 255, 255, 0.99)',
-          top: '200px',
+          top: `${navHeight + 8}px`,
           left: '6px',
           right: '6px',
           bottom: '12px',
