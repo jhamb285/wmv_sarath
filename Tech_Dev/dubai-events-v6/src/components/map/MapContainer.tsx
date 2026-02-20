@@ -405,33 +405,7 @@ const MapContainer: React.FC<ExtendedMapContainerProps> = ({
 
   // Initialize mapOptions and update when theme changes
   React.useEffect(() => {
-    const darkPurpleStyles: google.maps.MapTypeStyle[] = [
-      { elementType: "geometry", stylers: [{ color: "#0f0a2e" }] },
-      { elementType: "labels.text.fill", stylers: [{ color: "#6d5dac" }] },
-      { elementType: "labels.text.stroke", stylers: [{ color: "#0a0520" }] },
-      { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
-      { featureType: "administrative.land_parcel", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
-      { featureType: "administrative.land_parcel", elementType: "labels.text.fill", stylers: [{ color: "#4a3d7a" }] },
-      { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#110d28" }] },
-      { featureType: "landscape.man_made", elementType: "geometry", stylers: [{ color: "#0d0925" }] },
-      { featureType: "poi", elementType: "geometry", stylers: [{ color: "#110d28" }] },
-      { featureType: "poi", elementType: "labels.text", stylers: [{ visibility: "off" }] },
-      { featureType: "poi.business", stylers: [{ visibility: "off" }] },
-      { featureType: "poi.park", elementType: "geometry.fill", stylers: [{ color: "#0f1a2e" }] },
-      { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#3a5a4a" }] },
-      { featureType: "road", elementType: "geometry", stylers: [{ color: "#1a1040" }] },
-      { featureType: "road", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
-      { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#1e1450" }] },
-      { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#2a1860" }] },
-      { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#1a1040" }] },
-      { featureType: "road.highway.controlled_access", elementType: "geometry", stylers: [{ color: "#321d70" }] },
-      { featureType: "road.local", elementType: "labels.text.fill", stylers: [{ color: "#4a3d7a" }] },
-      { featureType: "transit", stylers: [{ visibility: "off" }] },
-      { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#060318" }] },
-      { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#2a1860" }] },
-    ];
-
-    const mapStyles = darkPurpleStyles;
+    const mapStyles = MAP_OPTIONS.styles;
 
     const newMapOptions: google.maps.MapOptions = {
       ...MAP_OPTIONS,

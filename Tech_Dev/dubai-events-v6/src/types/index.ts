@@ -311,7 +311,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#242f3e"
+        "color": "#f5f5f5"
       }
     ]
   },
@@ -319,7 +319,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#746855"
+        "color": "#616161"
       }
     ]
   },
@@ -327,7 +327,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "color": "#242f3e"
+        "color": "#f5f5f5"
       }
     ]
   },
@@ -336,7 +336,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#d59563"
+        "color": "#333333"
       }
     ]
   },
@@ -346,15 +346,6 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "stylers": [
       {
         "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "poi",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#d59563"
       }
     ]
   },
@@ -371,7 +362,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#263c3f"
+        "color": "#c8e6c9"
       }
     ]
   },
@@ -380,7 +371,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#6b9a76"
+        "color": "#4caf50"
       }
     ]
   },
@@ -389,7 +380,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#38414e"
+        "color": "#ffffff"
       }
     ]
   },
@@ -398,7 +389,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry.stroke",
     "stylers": [
       {
-        "color": "#212a37"
+        "color": "#e0e0e0"
       }
     ]
   },
@@ -416,7 +407,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#9ca5b3"
+        "color": "#757575"
       }
     ]
   },
@@ -425,7 +416,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#746855"
+        "color": "#e0e0e0"
       }
     ]
   },
@@ -434,7 +425,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "geometry.stroke",
     "stylers": [
       {
-        "color": "#1f2835"
+        "color": "#bdbdbd"
       }
     ]
   },
@@ -443,7 +434,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#f3d19c"
+        "color": "#616161"
       }
     ]
   },
@@ -456,29 +447,11 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     ]
   },
   {
-    "featureType": "transit",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#2f3948"
-      }
-    ]
-  },
-  {
-    "featureType": "transit.station",
-    "elementType": "labels.text.fill",
-    "stylers": [
-      {
-        "color": "#d59563"
-      }
-    ]
-  },
-  {
     "featureType": "water",
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#17263c"
+        "color": "#b3d9ff"
       }
     ]
   },
@@ -487,7 +460,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.fill",
     "stylers": [
       {
-        "color": "#515c6d"
+        "color": "#4a90d9"
       }
     ]
   },
@@ -496,7 +469,7 @@ export const RETRO_MAP_STYLE: google.maps.MapTypeStyle[] = [
     "elementType": "labels.text.stroke",
     "stylers": [
       {
-        "color": "#17263c"
+        "color": "#ffffff"
       }
     ]
   }

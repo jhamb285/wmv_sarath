@@ -463,7 +463,7 @@ const TopNav: React.FC<TopNavProps> = ({
     <div ref={mobileNavRef} className="fixed top-1.5 md:top-2 left-1.5 md:left-2 right-1.5 md:right-2 z-50">
       <div
         className={`px-3 md:px-4 rounded-2xl relative ${
-          showDatePicker ? 'py-1.5 md:py-3' : 'py-2 md:py-3.5'
+          showDatePicker ? 'py-2 md:py-3' : 'py-2 md:py-3.5'
         }`}
         style={{
           background: 'rgba(255, 255, 255, 0.97)',
